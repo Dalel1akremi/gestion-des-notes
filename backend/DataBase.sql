@@ -7,7 +7,7 @@ CREATE TABLE Etudiants (
    id INT ,
     prenom VARCHAR(50) NOT NULL,
     nom VARCHAR(50) NOT NULL,
-    date_naiss DATETIME,
+    date_naiss DATE,
     cin int (8),
     email VARCHAR(50) UNIQUE,
     password VARCHAR(255),
