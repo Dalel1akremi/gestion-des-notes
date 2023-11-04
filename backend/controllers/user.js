@@ -1,4 +1,5 @@
 import Etudiant from "../models/Etudiants.js";
+import Enseignant from "../models/Enseignants.js";
 import { Sequelize } from "sequelize";
 import multer from 'multer';
 import bcrypt from 'bcrypt'; // Assurez-vous d'avoir installé et importé correctement bcrypt
