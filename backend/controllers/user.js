@@ -7,7 +7,7 @@ const db = new Sequelize('affichage','root','',{
   dialect: "mysql"
 });
 
-export const inscriptionEnseigant = async(req, res) => {
+export const registerEns = async(req, res) => {
   const {  nom,prenom,cin,email,password ,Genre,DateNaissance} = req.body;
   const salt = await bcrypt.genSalt();
   const hashPassword = await bcrypt.hash(password, salt);

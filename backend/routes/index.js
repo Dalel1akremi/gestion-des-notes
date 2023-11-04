@@ -1,6 +1,6 @@
 import express from "express";
 const router = express.Router();
-import{inscriptionEnseigant}from "../controllers/user.js";
+import{registerEns}from "../controllers/user.js";
 
-router.post('/inscriptionEnseigant', inscriptionEnseigant);
+router.post('/registerEns', registerEns);
 export default router;
