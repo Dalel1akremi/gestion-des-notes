@@ -4,7 +4,7 @@ import db from "../config/DataBase.js";
 const { DataTypes } = Sequelize;
 
 const Enseignant = db.define('Enseignants',{
-    id: {
+    id_ens: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true},
@@ -18,18 +18,18 @@ const Enseignant = db.define('Enseignants',{
     cin:{
         type: DataTypes.INTEGER
     },
-    module :{
-        type: DataTypes.STRING
-    },
-    coeff:{
-        type:DataTypes.FLOAT
-    },
+   Genre:{
+    type:DataTypes.STRING
+   },
+   DateNaissance:{
+    type:DataTypes.DATE
+} ,
     email:{
         type: DataTypes.VARCHAR?
         primaryKey: true,
     },
     password:{
-        type: DataTypes.VARCHAR
+        type: DataTypes.STRING
     }
 },{
     freezeTableName:true

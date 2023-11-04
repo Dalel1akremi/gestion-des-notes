@@ -28,9 +28,9 @@ CREATE TABLE Enseignants (
    id_ens INT NOT NULL ,
    nom VARCHAR(50),
    prenom VARCHAR(50),
+    DateNaissance DATE,
+   Genre VARCHAR(10),
    cin int(8),
-   module varchar(50),
-   coeff float(4),
    email VARCHAR(50) UNIQUE,
    password VARCHAR(255),
    createdAt DATETIME NOT NULL,
@@ -41,4 +41,7 @@ CREATE TABLE Enseignants (
 
 ALTER TABLE Enseignants
   MODIFY id_ens INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+COMMIT;
+ALTER TABLE Enseignants
+MODIFY COLUMN Genre VARCHAR(10) CHECK (Genre IN ('homme', 'femme'));
 COMMIT;
