@@ -1,4 +1,6 @@
 import express from "express";
 const router = express.Router();
-//router.post('/LoginEtu', LoginEtu);//***example**//
+import{inscriptionEnseigant}from "../controllers/user.js";
+
+router.post('/inscriptionEnseigant', inscriptionEnseigant);
 export default router;
