@@ -11,9 +11,7 @@ CREATE TABLE Etudiants (
     cin int (8),
     email VARCHAR(50) UNIQUE,
     password VARCHAR(255),
-    photo_identite LONGBLOB,
-    type_mime VARCHAR(50),
-    date_inscription DATETIME,
+    photo_identite VARCHAR(255),
     createdAt DATETIME NOT NULL,
     updatedAt DATETIME NOT NULL,
    PRIMARY KEY (id, email)
