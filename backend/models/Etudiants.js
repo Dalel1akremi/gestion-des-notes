@@ -37,4 +37,3 @@ const Etudiant = db.define('Etudiants',{
 });
 
 export default Etudiant;
-

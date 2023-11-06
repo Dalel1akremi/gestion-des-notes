@@ -14,6 +14,7 @@ CREATE TABLE Etudiants (
     photo_identite VARCHAR(255),
     createdAt DATETIME NOT NULL,
     updatedAt DATETIME NOT NULL,
+    isArchived TINYINT(1) NOT NULL DEFAULT 0,
    PRIMARY KEY (id, email)
 );
 
@@ -21,7 +22,7 @@ CREATE TABLE Etudiants (
 ALTER TABLE Etudiants
   MODIFY id INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 COMMIT;
-   
+
    
   
 CREATE TABLE Enseignants (
