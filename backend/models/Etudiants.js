@@ -15,13 +15,13 @@ const Etudiant = db.define('Etudiants',{
         type: DataTypes.STRING
     },
     date_naiss:{
-        type: DataTypes.DATETIME
+        type: DataTypes.DATE
     },
     cin:{
         type: DataTypes.INTEGER
     },
     photo_identite :{
-        type: DataTypes.LONGBLOB
+        type: DataTypes.BLOB
     },
     type_mime:{
         type:DataTypes.STRING

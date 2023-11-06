@@ -29,11 +29,10 @@ const Enseignant = db.define('Enseignants',{
         primaryKey: true,
     },
     password:{
-        type: DataTypes.VARCHAR
+        type: DataTypes.STRING
     }
 },{
     freezeTableName:true
 });
 
 export default Enseignant;
-
