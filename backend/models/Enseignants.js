@@ -1,39 +1,36 @@
-import { Sequelize } from "sequelize";
+import { DataTypes } from "sequelize";
 import db from "../config/DataBase.js";
 
-const { DataTypes } = Sequelize;
-
-const Enseignant = db.define('Enseignants',{
+const Enseignant = db.define('Enseignants', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
-        autoIncrement: true},
-    nom:{
+        autoIncrement: true
+    },
+    nom: {
         type: DataTypes.STRING
     },
-    prenom:{
+    prenom: {
         type: DataTypes.STRING
     },
-   
-    cin:{
+    cin: {
         type: DataTypes.INTEGER
     },
-    module :{
+    module: {
         type: DataTypes.STRING
     },
-    coeff:{
-        type:DataTypes.FLOAT
+    coeff: {
+        type: DataTypes.FLOAT
     },
-    email:{
-        type: DataTypes.VARCHAR?
-        primaryKey: true,
+    email: {
+        type: DataTypes.STRING,
+        primaryKey: true
     },
-    password:{
-        type: DataTypes.VARCHAR
+    password: {
+        type: DataTypes.STRING
     }
-},{
-    freezeTableName:true
+}, {
+    freezeTableName: true
 });
 
 export default Enseignant;
-
