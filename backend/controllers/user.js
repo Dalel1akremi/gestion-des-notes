@@ -51,7 +51,7 @@ export const RegisterEtu = async (req, res) => {
       return res.status(500).json({ msg: "Une erreur est survenue" });
     }
 
-    const { nom, prenom, date_naiss, cin, photo_identite,email, password } = req.body;
+    const { nom, prenom, date_naiss, cin, photo_identite,email, password ,isArchived} = req.body;
     const salt = await bcrypt.genSalt();
     const hashPassword = await bcrypt.hash(password, salt);
 
@@ -63,7 +63,8 @@ export const RegisterEtu = async (req, res) => {
         cin: cin,
         email: email,
         password: hashPassword,
-        photo_identite: photo_identite // Enregistrez le chemin de l'image dans la base de données
+        photo_identite: photo_identite, // Enregistrez le chemin de l'image dans la base de données
+        isArchived:isArchived
       });
 
       res.json({ msg: "Enregistrement réussi" });
@@ -118,5 +119,24 @@ export const ArchiveEtudiant = async (req, res) => {
     } catch (error) {
       console.error(error);
       res.status(500).json({ msg: "An error occurred while archiving the student's folder" });
+    }
+  };
+  export const UpdateEtudiant = async (req, res) => {
+    try {
+      const etudiantId = req.params.id;
+      const updatedFields = req.body; 
+  
+      const etudiant = await Etudiant.findByPk(etudiantId);
+  
+      if (!etudiant) {
+        return res.status(404).json({ msg: "Student Not Found" });
+      }
+  
+      await etudiant.update(updatedFields);
+  
+      res.json({ msg: "Student's information has been updated." });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ msg: "An error occurred while updating the student's information" });
     }
   };

@@ -31,7 +31,11 @@ const Etudiant = db.define('Etudiants',{
     },
     password:{
         type: DataTypes.STRING
-    }
+    },
+    isArchived: {
+      type: DataTypes.BOOLEAN, 
+      defaultValue: false,
+    },
 },{
     freezeTableName:true
 });

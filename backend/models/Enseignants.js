@@ -1,7 +1,6 @@
 import { DataTypes } from "sequelize";
 import db from "../config/DataBase.js";
 
-const { DataTypes } = Sequelize;
 
 const Enseignant = db.define('Enseignants',{
     id_ens: {
@@ -29,7 +28,7 @@ const Enseignant = db.define('Enseignants',{
         primaryKey: true,
     },
     password:{
-        type: DataTypes.VARCHAR
+        type: DataTypes.STRING
     }
 }, {
     freezeTableName: true
