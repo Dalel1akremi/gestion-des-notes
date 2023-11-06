@@ -25,9 +25,9 @@ export const registerEns = async(req, res) => {
   const salt = await bcrypt.genSalt();
   const hashPassword = await bcrypt.hash(password, salt);
   try {
-      await Enseignant.create({       
+      await Enseignant.create({   
+        prenom:prenom,    
         nom: nom,
-        prenom:prenom,
           email: email,
           password: hashPassword,
           cin:cin,
