@@ -25,9 +25,9 @@ export const registerEns = async(req, res) => {
   const salt = await bcrypt.genSalt();
   const hashPassword = await bcrypt.hash(password, salt);
   try {
-      await Enseignant.create({       
+      await Enseignant.create({   
+        prenom:prenom,    
         nom: nom,
-        prenom:prenom,
           email: email,
           password: hashPassword,
           cin:cin,
@@ -121,22 +121,23 @@ export const ArchiveEtudiant = async (req, res) => {
       res.status(500).json({ msg: "An error occurred while archiving the student's folder" });
     }
   };
-  export const UpdateEtudiant = async (req, res) => {
-    try {
-      const etudiantId = req.params.id;
-      const updatedFields = req.body; 
-  
-      const etudiant = await Etudiant.findByPk(etudiantId);
-  
-      if (!etudiant) {
-        return res.status(404).json({ msg: "Student Not Found" });
-      }
-  
-      await etudiant.update(updatedFields);
-  
-      res.json({ msg: "Student's information has been updated." });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ msg: "An error occurred while updating the student's information" });
+
+export const UpdateEtudiant = async (req, res) => {
+  try {
+    const etudiantId = req.params.id;
+    const updatedFields = req.body; 
+
+    const etudiant = await Etudiant.findByPk(etudiantId);
+
+    if (!etudiant) {
+      return res.status(404).json({ msg: "Student Not Found" });
     }
-  };
+
+    await etudiant.update(updatedFields);
+
+    res.json({ msg: "Student's information has been updated." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: "An error occurred while updating the student's information" });
+  }
+};

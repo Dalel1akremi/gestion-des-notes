@@ -8,10 +8,11 @@ const Etudiant = db.define('Etudiants',{
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true},
-    nom:{
+    
+    prenom:{
         type: DataTypes.STRING
     },
-    prenom:{
+    nom:{
         type: DataTypes.STRING
     },
     date_naiss:{
