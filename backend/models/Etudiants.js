@@ -16,6 +16,7 @@ const Etudiant = db.define('Etudiants',{
     },
     date_naiss:{
         type: DataTypes.DATE
+        type: DataTypes.DATE
     },
     cin:{
         type: DataTypes.INTEGER
