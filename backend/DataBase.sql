@@ -5,17 +5,18 @@ SET time_zone = "+00:00";
 -- Table structure for table affichage
 CREATE TABLE Etudiants (
    id INT ,
-    prenom VARCHAR(50) NOT NULL,
-    nom VARCHAR(50) NOT NULL,
-    date_naiss DATETIME,
-    cin int (8),
-    email VARCHAR(50) UNIQUE,
-    password VARCHAR(255),
-    photo_identite LONGBLOB,
-    type_mime VARCHAR(50),
-    date_inscription DATETIME,
-    createdAt DATETIME NOT NULL,
-    updatedAt DATETIME NOT NULL,
+   prenom VARCHAR(50) NOT NULL,
+   nom VARCHAR(50) NOT NULL,
+   date_naiss DATETIME,
+   cin INT(8),
+   email VARCHAR(50) UNIQUE,
+   password VARCHAR(255),
+   photo_identite LONGBLOB,
+   type_mime VARCHAR(50),
+   date_inscription DATETIME,
+   createdAt DATETIME NOT NULL,
+   updatedAt DATETIME NOT NULL,
+   isArchived TINYINT(1) NOT NULL DEFAULT 0,
    PRIMARY KEY (id, email)
 );
 
@@ -23,7 +24,7 @@ CREATE TABLE Etudiants (
 ALTER TABLE Etudiants
   MODIFY id INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 COMMIT;
-   
+
    
   
 CREATE TABLE Enseignants (
