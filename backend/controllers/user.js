@@ -4,6 +4,7 @@ import { Sequelize } from "sequelize";
 import multer from 'multer';
 import bcrypt from 'bcrypt'; // Assurez-vous d'avoir installé et importé correctement bcrypt
 
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, '../photo'); // Spécifiez le chemin où vous souhaitez enregistrer les images
@@ -21,7 +22,7 @@ const db = new Sequelize('affichage', 'root', '', {
 });
 
 export const registerEns = async(req, res) => {
-  const {  nom,prenom,cin,email,password ,Genre,DateNaissance} = req.body;
+  const {  nom,prenom,cin,email,password ,Genre,DateNaissance,isArchived} = req.body;
   const salt = await bcrypt.genSalt();
   const hashPassword = await bcrypt.hash(password, salt);
   try {
@@ -32,7 +33,8 @@ export const registerEns = async(req, res) => {
           password: hashPassword,
           cin:cin,
           Genre:Genre,
-          DateNaissance:DateNaissance
+          DateNaissance:DateNaissance,
+          isArchived:isArchived
        
       });
       res.json({msg: "Register secessuful"});
@@ -139,5 +141,24 @@ export const UpdateEtudiant = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ msg: "An error occurred while updating the student's information" });
+  }
+};
+export const ArchiveEns= async (req, res) => {
+  try {
+    const EnseignantId = req.params.id_ens; 
+    const enseignant = await Enseignant.findByPk(EnseignantId);
+
+    if (!enseignant) {
+      return res.status(404).json({ msg: "Student Not Found" });
+    }
+
+    Enseignant.isArchived = true; 
+
+    await Enseignant.save(); 
+
+    res.json({ msg: "Enseignant is folder has been archived." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: "An error occurred while archiving the enseignant is folder" });
   }
 };
