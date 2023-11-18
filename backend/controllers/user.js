@@ -152,9 +152,9 @@ export const ArchiveEns= async (req, res) => {
       return res.status(404).json({ msg: "Student Not Found" });
     }
 
-    Enseignant.isArchived = true; 
+    enseignant.isArchived = true; 
 
-    await Enseignant.save(); 
+    await enseignant.save(); 
 
     res.json({ msg: "Enseignant is folder has been archived." });
   } catch (error) {
