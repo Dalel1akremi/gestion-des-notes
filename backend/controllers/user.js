@@ -143,6 +143,30 @@ export const UpdateEtudiant = async (req, res) => {
     res.status(500).json({ msg: "An error occurred while updating the student's information" });
   }
 };
+export const UpdateEnseignant = async (req, res) => {
+  try {
+    const enseignantId = req.params.id;
+    const updatedFields = req.body; 
+    if (updatedFields.password) {
+      // Générer un sel pour le hachage
+      const salt = await bcrypt.genSalt(10);
+      // Hacher le mot de passe avec le sel
+      updatedFields.password = await bcrypt.hash(updatedFields.password, salt);
+    }
+    const enseignant = await Enseignant.findByPk(enseignantId);
+
+    if (!enseignant) {
+      return res.status(404).json({ msg: "Teacher Not Found" });
+    }
+
+    await enseignant.update(updatedFields);
+
+    res.json({ msg: "Teacher's information has been updated." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: "An error occurred while updating the teacher's information" });
+  }
+};
 export const ArchiveEns= async (req, res) => {
   try {
     const EnseignantId = req.params.id_ens; 
@@ -162,3 +186,4 @@ export const ArchiveEns= async (req, res) => {
     res.status(500).json({ msg: "An error occurred while archiving the enseignant is folder" });
   }
 };
+
