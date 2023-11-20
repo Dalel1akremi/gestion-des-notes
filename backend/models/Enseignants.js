@@ -1,4 +1,4 @@
-import { DataTypes } from "sequelize";
+import { Sequelize } from "sequelize";
 import db from "../config/DataBase.js";
 
 const { DataTypes } = Sequelize;
@@ -30,7 +30,11 @@ const Enseignant = db.define('Enseignants',{
     },
     password:{
         type: DataTypes.STRING
-    }
+    },
+    isArchived: {
+      type: DataTypes.BOOLEAN, 
+      defaultValue: false,
+    },
 }, {
     freezeTableName: true
 });

@@ -36,6 +36,7 @@ CREATE TABLE Enseignants (
    password VARCHAR(255),
    createdAt DATETIME NOT NULL,
    updatedAt DATETIME NOT NULL,
+    isArchived TINYINT(1) NOT NULL DEFAULT 0,
    PRIMARY KEY (id_ens, email)
 );
 
@@ -76,4 +77,20 @@ CREATE TABLE Notes (
 );
 ALTER TABLE Module
 MODIFY id_note INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+COMMIT;
+
+
+CREATE TABLE Administrateurs (
+   id_adm INT NOT NULL ,
+   nom VARCHAR(50),
+   prenom VARCHAR(50),
+   email VARCHAR(50) UNIQUE,
+   password VARCHAR(255),
+   createdAt DATETIME NOT NULL,
+   updatedAt DATETIME NOT NULL,
+   PRIMARY KEY (id_adm, email)
+);
+
+ALTER TABLE Administrateurs
+  MODIFY id_adm INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 COMMIT;

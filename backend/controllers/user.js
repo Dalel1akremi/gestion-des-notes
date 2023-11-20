@@ -1,11 +1,14 @@
 import Etudiant from "../models/Etudiants.js";
 import Enseignant from "../models/Enseignants.js";
+import Administrateur from "../models/Administrateurs.js";
 import { Sequelize } from "sequelize";
 import Note from '../models/Notes.js';
 import Module from '../models/Modules.js';
 import express from 'express';
 import multer from 'multer';
 import bcrypt from 'bcrypt'; // Assurez-vous d'avoir installé et importé correctement bcrypt
+import jwt from "jsonwebtoken";
+
 
 
 const app = express();
@@ -37,7 +40,9 @@ export const registerEns = async(req, res) => {
         Genre:Genre,
         cin:cin,
           email: email,
-          password: hashPassword
+          password: hashPassword,
+          isArchived:isArchived
+
       });
       res.json({msg: "Register secessuful"});
   } catch (error) {
@@ -79,32 +84,61 @@ export const RegisterEtu = async (req, res) => {
   });
 };
 
-export const LoginEtudiant = async(req, res) => {
-   
+export const registerAdm = async(req, res) => {
+  const { nom,prenom,email,password} = req.body;
+  const salt = await bcrypt.genSalt();
+  const hashPassword = await bcrypt.hash(password, salt);
   try {
-      const user = await Etudiant.findAll({
-          where:{
-              email: req.body.email
-          }
-   
+      await Administrateur.create({   
+        prenom:prenom,    
+        nom: nom,
+          email: email,
+          password: hashPassword
+       
       });
-     
-      const match = await bcrypt.compare(req.body.password, user[0].password);
-      console.log(match)
-      if(!match) return res.status(400).json({msg: "Wrong Password"});
-      const userId = user[0].id;
-      const email = user[0].email;
-      console.log("logged: ", process.env.ACCESS_TOKEN_SECRET)
-      const token = jwt.sign({userId,email}, process.env.ACCESS_TOKEN_SECRET, {
-          expiresIn: "7d",
-      });
-      res.json({token});
-      //return token;
+      res.json({msg: "Register secessuful"});
   } catch (error) {
-      res.status(404).json({msg:"User Not Found "});
-  }
+      console.log(error);
+      return res.status(404).json({msg: "Eror"});
+
+  } 
 }
 
+export const login = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        // Check if the user exists in the student table
+        let user = await Etudiant.findOne({ where: { email } });
+        let userType = 'student';
+
+        if (!user) {
+            // If not found in students, check in teachers table
+            user = await Enseignant.findOne({ where: { email } });
+            userType = 'teacher';
+            if (!user) {
+                // If not found in teachers, check in administrators table
+                user = await Administrateur.findOne({ where: { email } });
+                userType = 'admin';
+            }
+        }
+
+        if (!user) {
+            return res.status(404).json({ msg: "User not found" });
+        }
+
+        const match = await bcrypt.compare(password, user.password);
+        if (!match) {
+            return res.status(401).json({ msg: "Invalid credentials" });
+        }
+
+        const token = jwt.sign({ userId: user.id, userType }, "YOUR_SECRET_KEY");
+        res.json({ token });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: "Server Error" });
+    }
+};
 
 export const ArchiveEtudiant = async (req, res) => {
     try {
@@ -159,6 +193,50 @@ export const UpdateEtudiant = async (req, res) => {
     res.status(500).json({ msg: "An error occurred while updating the student's information" });
   }
 };
+export const UpdateEnseignant = async (req, res) => {
+  try {
+    const enseignantId = req.params.id;
+    const updatedFields = req.body; 
+    if (updatedFields.password) {
+      // Générer un sel pour le hachage
+      const salt = await bcrypt.genSalt(10);
+      // Hacher le mot de passe avec le sel
+      updatedFields.password = await bcrypt.hash(updatedFields.password, salt);
+    }
+    const enseignant = await Enseignant.findByPk(enseignantId);
+
+    if (!enseignant) {
+      return res.status(404).json({ msg: "Teacher Not Found" });
+    }
+
+    await enseignant.update(updatedFields);
+
+    res.json({ msg: "Teacher's information has been updated." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: "An error occurred while updating the teacher's information" });
+  }
+};
+export const ArchiveEns= async (req, res) => {
+  try {
+    const EnseignantId = req.params.id_ens; 
+    const enseignant = await Enseignant.findByPk(EnseignantId);
+
+    if (!enseignant) {
+      return res.status(404).json({ msg: "Student Not Found" });
+    }
+
+    enseignant.isArchived = true; 
+
+    await enseignant.save(); 
+
+    res.json({ msg: "Enseignant is folder has been archived." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: "An error occurred while archiving the enseignant is folder" });
+  }
+};
+
 
 
 Etudiant.hasMany(Note, { foreignKey: 'id' });
