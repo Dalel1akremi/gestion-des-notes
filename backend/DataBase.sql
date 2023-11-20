@@ -5,7 +5,6 @@ SET time_zone = "+00:00";
 -- Table structure for table affichage
 CREATE TABLE Etudiants (
    id INT ,
-    
     nom VARCHAR(50) NOT NULL,
     prenom VARCHAR(50) NOT NULL,
     date_naiss DATE,
@@ -46,4 +45,35 @@ ALTER TABLE Enseignants
 COMMIT;
 ALTER TABLE Enseignants
 MODIFY COLUMN Genre VARCHAR(10) CHECK (Genre IN ('homme', 'femme'));
+COMMIT;
+
+CREATE TABLE Modules (
+  id_module INT NOT NULL,
+  nom_matiere VARCHAR(50),
+  coefficient float,
+  id_ens INT NOT NULL ,
+   PRIMARY KEY (id_module),
+   FOREIGN KEY (id_ens) REFERENCES Enseignants (id_ens)
+);
+
+ALTER TABLE Module
+MODIFY id_module INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+COMMIT;
+
+CREATE TABLE Notes (
+  id_note INT NOT NULL,
+  id_module INT NOT NULL,
+  id_ens INT NOT NULL ,
+  id INT NOT NULL,
+  note_ds1 float,
+  note_ds2 float,
+  note_examen float,
+  note_tp float,
+  PRIMARY KEY (id_note),
+   FOREIGN KEY (id_ens) REFERENCES Enseignants (id_ens),
+   FOREIGN KEY (id) REFERENCES Etudiants (id),
+   FOREIGN KEY (id_module) REFERENCES Module (id_ens)
+);
+ALTER TABLE Module
+MODIFY id_note INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 COMMIT;

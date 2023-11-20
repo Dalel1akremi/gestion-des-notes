@@ -1,9 +1,14 @@
 import Etudiant from "../models/Etudiants.js";
 import Enseignant from "../models/Enseignants.js";
 import { Sequelize } from "sequelize";
+import Note from '../models/Notes.js';
+import Module from '../models/Modules.js';
+import express from 'express';
 import multer from 'multer';
 import bcrypt from 'bcrypt'; // Assurez-vous d'avoir installé et importé correctement bcrypt
 
+
+const app = express();
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, '../photo'); // Spécifiez le chemin où vous souhaitez enregistrer les images
@@ -21,19 +26,18 @@ const db = new Sequelize('affichage', 'root', '', {
 });
 
 export const registerEns = async(req, res) => {
-  const {  nom,prenom,cin,email,password ,Genre,DateNaissance} = req.body;
+  const {  nom,prenom,DateNaissance,Genre,cin,email,password } = req.body;
   const salt = await bcrypt.genSalt();
   const hashPassword = await bcrypt.hash(password, salt);
   try {
       await Enseignant.create({   
-        prenom:prenom,    
         nom: nom,
+        prenom:prenom,    
+        DateNaissance:DateNaissance,
+        Genre:Genre,
+        cin:cin,
           email: email,
-          password: hashPassword,
-          cin:cin,
-          Genre:Genre,
-          DateNaissance:DateNaissance
-       
+          password: hashPassword
       });
       res.json({msg: "Register secessuful"});
   } catch (error) {
@@ -122,10 +126,24 @@ export const ArchiveEtudiant = async (req, res) => {
     }
   };
 
+ 
+
+ // Import other dependencies here if needed
+
+
+
 export const UpdateEtudiant = async (req, res) => {
   try {
     const etudiantId = req.params.id;
-    const updatedFields = req.body; 
+    let updatedFields = req.body; 
+
+    // Check if the request body contains a password field
+    if (updatedFields.password) {
+      // Hash the password before updating it
+      const saltRounds = 10;
+      const hashedPassword = await bcrypt.hash(updatedFields.password, saltRounds);
+      updatedFields.password = hashedPassword;
+    }
 
     const etudiant = await Etudiant.findByPk(etudiantId);
 
@@ -139,5 +157,44 @@ export const UpdateEtudiant = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ msg: "An error occurred while updating the student's information" });
+  }
+};
+
+
+Etudiant.hasMany(Note, { foreignKey: 'id' });
+Note.belongsTo(Etudiant, { foreignKey: 'id' });
+Module.hasMany(Note, { foreignKey: 'id_module' });
+Note.belongsTo(Module, { foreignKey: 'id_module' });
+
+export const SubjectsGrades = async (req, res) => {
+  try {
+    const studentId = req.params.id;
+    const studentData = await Etudiant.findByPk(studentId, {
+      include: [
+        {
+          model: Note,
+          attributes: ['id_note', 'id_module', 'id_ens', 'id', 'note_ds1', 'note_ds2', 'note_examen', 'note_tp'],
+          include: {
+            model: Module,
+            attributes: ['id_module', 'nom_matiere', 'coefficient', 'id_ens'],
+          },
+        },
+      ],
+    });
+
+    const formattedData = studentData.Notes.map(note => ({
+      subject: note.Module.nom_matiere,
+      grades: {
+        note_ds1: note.note_ds1,
+        note_ds2: note.note_ds2,
+        note_examen: note.note_examen,
+        note_tp: note.note_tp,
+      },
+    }));
+
+    res.json(formattedData);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
   }
 };
