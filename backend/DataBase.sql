@@ -5,7 +5,6 @@ SET time_zone = "+00:00";
 -- Table structure for table affichage
 CREATE TABLE Etudiants (
    id INT ,
-    
     nom VARCHAR(50) NOT NULL,
     prenom VARCHAR(50) NOT NULL,
     date_naiss DATE,
@@ -37,6 +36,7 @@ CREATE TABLE Enseignants (
    password VARCHAR(255),
    createdAt DATETIME NOT NULL,
    updatedAt DATETIME NOT NULL,
+    isArchived TINYINT(1) NOT NULL DEFAULT 0,
    PRIMARY KEY (id_ens, email)
 );
 
