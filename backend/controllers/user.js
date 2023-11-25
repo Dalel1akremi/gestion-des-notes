@@ -296,19 +296,19 @@ export const editMatiere = async (req, res) => {
   const { nom, newNom } = req.body;
 
   try {
-    const category = await Matiere.findOne({ where: { nom_matiere: nom } 
-    });
+    const mat = await Matiere.findOne({ where: { nom_matiere: nom } });
 
-    if (!category) {
+    if (!mat) {
       return res.status(404).json({ msg: "Matiere n'existe pas " });
     }
 
-    Matiere.nom_matiere = newNom;
-    await category.save();
+    mat.nom_matiere = newNom; // Update the property of the category instance
+    await mat.save();
 
-    res.json({ msg: "Matiere modifiée avec succes", Matiere });
+    res.json({ msg: "Matiere modifiée avec succes", Matiere: mat });
   } catch (error) {
     console.error("Error in editMatiere:", error);
     return res.status(500).json({ msg: "Erreur", error: error.message });
   }
 };
+
