@@ -30,7 +30,7 @@ const db = new Sequelize('affichage', 'root', '', {
 });
 
 export const registerEns = async(req, res) => {
-  const {  nom,prenom,DateNaissance,Genre,cin,email,password } = req.body;
+  const {  nom,prenom,DateNaissance,Genre,cin,email,password,isArchived } = req.body;
   const salt = await bcrypt.genSalt();
   const hashPassword = await bcrypt.hash(password, salt);
   try {
@@ -290,5 +290,25 @@ export const ajoutMatiere = async (req, res) => {
   } catch (error) {
     console.error(error);
     return res.status(500).json({ msg: "Error" });
+  }
+};
+export const editMatiere = async (req, res) => {
+  const { nom, newNom } = req.body;
+
+  try {
+    const category = await Matiere.findOne({ where: { nom_matiere: nom } 
+    });
+
+    if (!category) {
+      return res.status(404).json({ msg: "Matiere n'existe pas " });
+    }
+
+    Matiere.nom_matiere = newNom;
+    await category.save();
+
+    res.json({ msg: "Matiere modifiée avec succes", Matiere });
+  } catch (error) {
+    console.error("Error in editMatiere:", error);
+    return res.status(500).json({ msg: "Erreur", error: error.message });
   }
 };
