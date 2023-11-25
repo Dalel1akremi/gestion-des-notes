@@ -9,13 +9,7 @@ const Note = db.define('Notes',{
         primaryKey: true,
         autoIncrement: true
     },
-    id_module: {
-        type: DataTypes.INTEGER,
-        references:{
-            model: 'modules',
-            key:'id_module'
-        }
-    },
+   
     id_ens: {
         type: DataTypes.INTEGER,
         references:{
