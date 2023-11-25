@@ -42,6 +42,13 @@ const Note = db.define('Notes',{
     note_tp: {
         type: DataTypes.FLOAT
     },
+    id_matiere: {
+        type: DataTypes.INTEGER,
+        references:{
+            model: 'matieres',
+            key:'id_matiere'
+        }
+    },
 
    
 }, {
