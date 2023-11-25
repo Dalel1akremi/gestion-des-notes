@@ -4,7 +4,6 @@ import Administrateur from "../models/Administrateurs.js";
 import Matiere from "../models/Matiere.js";
 import { Sequelize } from "sequelize";
 import Note from '../models/Notes.js';
-import Module from '../models/Modules.js';
 import express from 'express';
 import multer from 'multer';
 import bcrypt from 'bcrypt'; // Assurez-vous d'avoir installé et importé correctement bcrypt
@@ -242,8 +241,8 @@ export const ArchiveEns= async (req, res) => {
 
 Etudiant.hasMany(Note, { foreignKey: 'id' });
 Note.belongsTo(Etudiant, { foreignKey: 'id' });
-Module.hasMany(Note, { foreignKey: 'id_module' });
-Note.belongsTo(Module, { foreignKey: 'id_module' });
+Matiere.hasMany(Note, { foreignKey: 'id_matiere' });
+Note.belongsTo(Matiere, { foreignKey: 'id_matiere' });
 
 export const SubjectsGrades = async (req, res) => {
   try {
@@ -252,10 +251,10 @@ export const SubjectsGrades = async (req, res) => {
       include: [
         {
           model: Note,
-          attributes: ['id_note', 'id_module', 'id_ens', 'id', 'note_ds1', 'note_ds2', 'note_examen', 'note_tp'],
+          attributes: ['id_note', 'id_matiere', 'id_ens', 'id', 'note_ds1', 'note_examen', 'note_tp'],
           include: {
-            model: Module,
-            attributes: ['id_module', 'nom_matiere', 'coefficient', 'id_ens'],
+            model: Matiere,
+            attributes: ['id_matiere', 'nom_matiere', 'coefficient','type_matiere', 'id_ens'],
           },
         },
       ],
@@ -265,7 +264,6 @@ export const SubjectsGrades = async (req, res) => {
       subject: note.Module.nom_matiere,
       grades: {
         note_ds1: note.note_ds1,
-        note_ds2: note.note_ds2,
         note_examen: note.note_examen,
         note_tp: note.note_tp,
       },
@@ -279,12 +277,15 @@ export const SubjectsGrades = async (req, res) => {
 };
 
 export const ajoutMatiere = async (req, res) => {
-  const { nom_matiere, contenu } = req.body;
+  const { nom_matiere, contenu,type_matiere,coefficient,id_ens } = req.body;
 
   try {
     await Matiere.create({
       nom_matiere: nom_matiere,
       contenu: contenu,
+      type_matiere:type_matiere,
+      coefficient:coefficient,
+      id_ens:id_ens
     });
     res.json({ msg: "successful" });
   } catch (error) {

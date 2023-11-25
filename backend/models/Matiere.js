@@ -9,6 +9,10 @@ const Matiere = db.define('Matieres', {
     primaryKey: true,
     autoIncrement: true
   },
+  id_ens: {
+    type: DataTypes.INTEGER,
+  
+  },
   nom_matiere: {
     type: DataTypes.STRING,
     allowNull: false
