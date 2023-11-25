@@ -27,9 +27,6 @@ const Note = db.define('Notes',{
     note_ds1: {
         type: DataTypes.FLOAT
     },
-    note_ds2: {
-        type: DataTypes.FLOAT
-    },
     note_examen: {
         type: DataTypes.FLOAT
     },

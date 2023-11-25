@@ -55,7 +55,6 @@ CREATE TABLE Notes (
   id_ens INT NOT NULL ,
   id INT NOT NULL,
   note_ds1 float,
-  note_ds2 float,
   note_examen float,
   note_tp float,
    createdAt DATETIME NOT NULL,
