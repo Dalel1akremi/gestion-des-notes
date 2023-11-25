@@ -1,6 +1,7 @@
 import Etudiant from "../models/Etudiants.js";
 import Enseignant from "../models/Enseignants.js";
 import Administrateur from "../models/Administrateurs.js";
+import Matiere from "../models/Matiere.js";
 import { Sequelize } from "sequelize";
 import Note from '../models/Notes.js';
 import Module from '../models/Modules.js';
@@ -274,5 +275,20 @@ export const SubjectsGrades = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
+  }
+};
+
+export const ajoutMatiere = async (req, res) => {
+  const { nom_matiere, contenu } = req.body;
+
+  try {
+    await Matiere.create({
+      nom_matiere: nom_matiere,
+      contenu: contenu,
+    });
+    res.json({ msg: "successful" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ msg: "Error" });
   }
 };

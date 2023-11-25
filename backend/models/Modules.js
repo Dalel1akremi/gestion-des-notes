@@ -13,6 +13,9 @@ const Module = db.define('Modules',{
     nom_matiere: {
         type: DataTypes.STRING
     },
+    id_matiere: {
+        type: DataTypes.INTEGER
+    },
     coefficient: {
         type: DataTypes.FLOAT
     },

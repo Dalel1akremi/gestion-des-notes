@@ -51,10 +51,12 @@ COMMIT;
 CREATE TABLE Modules (
   id_module INT NOT NULL,
   nom_matiere VARCHAR(50),
+  id_matiere INT(11),
   coefficient float,
   id_ens INT NOT NULL ,
    PRIMARY KEY (id_module),
-   FOREIGN KEY (id_ens) REFERENCES Enseignants (id_ens)
+   FOREIGN KEY (id_ens) REFERENCES Enseignants (id_ens),
+   FOREIGN KEY (id_matiere) REFERENCES Enseignants (id_matiere)
 );
 
 ALTER TABLE Module
@@ -93,4 +95,18 @@ CREATE TABLE Administrateurs (
 
 ALTER TABLE Administrateurs
   MODIFY id_adm INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+COMMIT;
+
+
+CREATE TABLE Matieres (
+  id_matiere INT ,
+  nom_matiere VARCHAR(100) NOT NULL,
+  contenu TEXT,
+  PRIMARY KEY (id_matiere),
+   createdAt DATETIME NOT NULL,
+   updatedAt DATETIME NOT NULL
+  
+);
+ALTER TABLE Matieres
+  MODIFY id_matiere INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 COMMIT;
