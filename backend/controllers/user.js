@@ -292,3 +292,26 @@ export const ajoutMatiere = async (req, res) => {
     return res.status(500).json({ msg: "Error" });
   }
 };
+
+export const moyenne = async (req, res) => {
+  try {
+    // Récupérer toutes les notes
+    const allNotes = await Note.findAll();
+
+    if (allNotes.length === 0) {
+      return res.status(404).json({ message: "Aucune note trouvée." });
+    }
+
+    // Calculer la moyenne de tous les étudiants
+    const moyennes = [];
+    allNotes.forEach(note => {
+      const moyenne = (note.note_ds1 +  note.note_examen) / 3;
+      moyennes.push({ id: note.id, moyenne });
+    });
+
+    res.json({ moyennes });
+  } catch (error) {
+    console.error('Erreur lors du calcul des moyennes :', error);
+    res.status(500).json({ message: 'Erreur serveur lors du calcul des moyennes.' });
+  }
+};

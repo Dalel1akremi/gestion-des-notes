@@ -13,9 +13,15 @@ const Matiere = db.define('Matieres', {
     type: DataTypes.STRING,
     allowNull: false
   },
+  type_matiere:{
+type:DataTypes.STRING
+  },
   contenu: {
     type: DataTypes.TEXT
-  }
+  },
+  coefficient:{
+    type:DataTypes.INTEGER
+      }
 }, {
   freezeTableName: true
 });
