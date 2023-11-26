@@ -1,6 +1,7 @@
 import { Sequelize } from "sequelize";
 import db from "../config/DataBase.js";
 
+
 const { DataTypes } = Sequelize;
 
 const Matiere = db.define('Matieres', {

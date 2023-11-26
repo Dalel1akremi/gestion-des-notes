@@ -261,7 +261,7 @@ export const SubjectsGrades = async (req, res) => {
     });
 
     const formattedData = studentData.Notes.map(note => ({
-      subject: note.Module.nom_matiere,
+      subject: note.Matiere.nom_matiere,
       grades: {
         note_ds1: note.note_ds1,
         note_examen: note.note_examen,
@@ -312,11 +312,23 @@ export const editMatiere = async (req, res) => {
     return res.status(500).json({ msg: "Erreur", error: error.message });
   }
 };
-
 export const moyenne = async (req, res) => {
   try {
-    // Récupérer toutes les notes
-    const allNotes = await Note.findAll();
+    // Récupérer toutes les notes avec les détails de la matière associée
+    const allNotes = await Note.findAll({
+      attributes: ['id', 'note_ds1', 'note_examen', 'note_tp'],
+      include: [
+        {
+          model: Matiere,
+          attributes: ['id_matiere', 'nom_matiere', 'coefficient', 'type_matiere'],
+         
+        },
+        {
+          model: Etudiant,
+          attributes: ['id','nom','prenom'], // Vous pouvez spécifier les attributs de l'étudiant que vous souhaitez récupérer
+        },
+      ],
+    });
 
     if (allNotes.length === 0) {
       return res.status(404).json({ message: "Aucune note trouvée." });
@@ -325,8 +337,20 @@ export const moyenne = async (req, res) => {
     // Calculer la moyenne de tous les étudiants
     const moyennes = [];
     allNotes.forEach(note => {
-      const moyenne = (note.note_ds1 +  note.note_examen) / 3;
-      moyennes.push({ id: note.id, moyenne });
+      let moyenne;
+      if (note.Etudiant && note.Etudiant.id) {
+        const matiere = note.Matiere;
+        const etudiant = note.Etudiant;
+        if (matiere.type_matiere === 'tp') {
+          // Si le type de matière est 'tp', calculer la moyenne avec la note tp
+          moyenne = (note.note_ds1 + note.note_tp + note.note_examen * matiere.coefficient) / (2 + matiere.coefficient);
+        } else {
+          // Sinon, calculer la moyenne sans la note tp
+          moyenne = (note.note_ds1 + note.note_examen * matiere.coefficient) / (1 + matiere.coefficient);
+        }
+
+        moyennes.push({ id_Etudiant: note.Etudiant.id,nom_Etudiant:etudiant.nom,prenom_Etudiant:etudiant.prenom, nom_matiere: matiere.nom_matiere, moyenne });
+      }
     });
 
     res.json({ moyennes });
