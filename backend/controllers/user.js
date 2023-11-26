@@ -367,25 +367,25 @@ export const moyenne = async (req, res) => {
         const etudiant = note.Etudiant;
         let moyenne;
 
-        if (matiere.type_matiere === 'tp') {
+        if (matiere.type_matiere === 'tp' && note.note_ds1 !== null && note.note_tp !== null && note.note_examen !== null) {
           // Si le type de matière est 'tp', calculer la moyenne avec la note tp
           moyenne = (note.note_ds1 + note.note_tp + note.note_examen * matiere.coefficient) / (2 + matiere.coefficient);
-        } else {
+        } else if (note.note_ds1 !== null && note.note_examen !== null) {
           // Sinon, calculer la moyenne sans la note tp
           moyenne = (note.note_ds1 + note.note_examen * matiere.coefficient) / (1 + matiere.coefficient);
+
+          moyennes_par_matiere.push({ id_Etudiant: etudiant.id, nom_Etudiant: etudiant.nom, prenom_Etudiant: etudiant.prenom, nom_matiere: matiere.nom_matiere, moyenne });
+
+          // Calculer la moyenne générale pour chaque étudiant
+          if (!moyenneGenerale[etudiant.id]) {
+            moyenneGenerale[etudiant.id] = { total: 0, count: 0 };
+          }
+
+          moyenneGenerale[etudiant.id].total += moyenne;
+          moyenneGenerale[etudiant.id].count += 1;
+        } else {
+          console.error('Erreur lors du calcul des moyennes, une note manquante :', error);
         }
-
-        moyennes_par_matiere.push({ id_Etudiant: etudiant.id, nom_Etudiant: etudiant.nom, prenom_Etudiant: etudiant.prenom, nom_matiere: matiere.nom_matiere, moyenne });
-        
-
-       
-        // Calculer la moyenne générale pour chaque étudiant
-        if (!moyenneGenerale[etudiant.id]) {
-          moyenneGenerale[etudiant.id] = { total: 0, count: 0 };
-        }
-
-        moyenneGenerale[etudiant.id].total += moyenne;
-        moyenneGenerale[etudiant.id].count += 1;
       }
     });
 
@@ -404,6 +404,7 @@ export const moyenne = async (req, res) => {
     res.status(500).json({ message: 'Erreur serveur lors du calcul des moyennes.' });
   }
 };
+
 
 export const StudentsGrades = async (req, res) => {
   try {
