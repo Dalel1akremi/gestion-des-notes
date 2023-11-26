@@ -322,10 +322,10 @@ export const editMatiere = async (req, res) => {
       // Hacher le mot de passe avec le sel
       updatedFields.password = await bcrypt.hash(updatedFields.password, salt);
     }
-    const Mat = await Enseignant.findByPk(matiereId);
+    const Mat = await Matiere.findByPk(matiereId);
 
     if (!Mat) {
-      return res.status(404).json({ msg: "Teacher Not Found" });
+      return res.status(404).json({ msg: "subject Not Found" });
     }
 
     await Mat.update(updatedFields);
