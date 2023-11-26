@@ -49,24 +49,6 @@ MODIFY COLUMN Genre VARCHAR(10) CHECK (Genre IN ('homme', 'femme'));
 COMMIT;
 
 
-CREATE TABLE Notes (
-  id_note INT NOT NULL,
-  id_matiere INT NOT NULL,
-  id_ens INT NOT NULL ,
-  id INT NOT NULL,
-  note_ds1 float,
-  note_examen float,
-  note_tp float,
-   createdAt DATETIME NOT NULL,
-   updatedAt DATETIME NOT NULL,
-  PRIMARY KEY (id_note),
-   FOREIGN KEY (id_ens) REFERENCES Enseignants (id_ens),
-   FOREIGN KEY (id) REFERENCES Etudiants (id),
-   FOREIGN KEY (id_matiere) REFERENCES matieres (id_matiere)
-);
-ALTER TABLE Notes
-MODIFY id_note INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
-COMMIT;
 
 
 CREATE TABLE Administrateurs (
@@ -95,7 +77,7 @@ CREATE TABLE Matieres (
    createdAt DATETIME NOT NULL,
    updatedAt DATETIME NOT NULL,
   PRIMARY KEY (id_matiere,nom_matiere),
-   FOREIGN KEY (id_ens) REFERENCES Enseignants (id_ens),
+   FOREIGN KEY (id_ens) REFERENCES Enseignants (id_ens)
  
 
   
@@ -103,34 +85,24 @@ CREATE TABLE Matieres (
 ALTER TABLE Matieres
   MODIFY id_matiere INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 COMMIT;
-CREATE TABLE Modules (
-  id_module INT NOT NULL,
-  nom_module VARCHAR(50),
-  coefficient float,
-  id_ens INT NOT NULL ,
-  id_matiere INT(11),
-   PRIMARY KEY (id_module),
-   FOREIGN KEY (id_ens) REFERENCES Enseignants (id_ens),
-   FOREIGN KEY (id_matiere) REFERENCES matieres (id_matiere)
-);
 
-ALTER TABLE Modules
-MODIFY id_module INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
-COMMIT;
+
+
 
 CREATE TABLE Notes (
   id_note INT NOT NULL,
-  id_module INT NOT NULL,
+  id_matiere INT NOT NULL,
   id_ens INT NOT NULL ,
   id INT NOT NULL,
   note_ds1 float,
-  note_ds2 float,
   note_examen float,
   note_tp float,
+   createdAt DATETIME NOT NULL,
+   updatedAt DATETIME NOT NULL,
   PRIMARY KEY (id_note),
    FOREIGN KEY (id_ens) REFERENCES Enseignants (id_ens),
    FOREIGN KEY (id) REFERENCES Etudiants (id),
-   FOREIGN KEY (id_module) REFERENCES Modules (id_ens)
+   FOREIGN KEY (id_matiere) REFERENCES matieres (id_matiere)
 );
 ALTER TABLE Notes
 MODIFY id_note INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
