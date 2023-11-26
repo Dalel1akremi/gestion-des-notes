@@ -321,11 +321,10 @@ export const moyenne = async (req, res) => {
         {
           model: Matiere,
           attributes: ['id_matiere', 'nom_matiere', 'coefficient', 'type_matiere'],
-         
         },
         {
           model: Etudiant,
-          attributes: ['id','nom','prenom'], // Vous pouvez spécifier les attributs de l'étudiant que vous souhaitez récupérer
+          attributes: ['id', 'nom', 'prenom'],
         },
       ],
     });
@@ -335,12 +334,15 @@ export const moyenne = async (req, res) => {
     }
 
     // Calculer la moyenne de tous les étudiants
-    const moyennes = [];
+    const moyennes_par_matiere = [];
+    const moyenneGenerale = {};
+
     allNotes.forEach(note => {
-      let moyenne;
       if (note.Etudiant && note.Etudiant.id) {
         const matiere = note.Matiere;
         const etudiant = note.Etudiant;
+        let moyenne;
+
         if (matiere.type_matiere === 'tp') {
           // Si le type de matière est 'tp', calculer la moyenne avec la note tp
           moyenne = (note.note_ds1 + note.note_tp + note.note_examen * matiere.coefficient) / (2 + matiere.coefficient);
@@ -349,11 +351,30 @@ export const moyenne = async (req, res) => {
           moyenne = (note.note_ds1 + note.note_examen * matiere.coefficient) / (1 + matiere.coefficient);
         }
 
-        moyennes.push({ id_Etudiant: note.Etudiant.id,nom_Etudiant:etudiant.nom,prenom_Etudiant:etudiant.prenom, nom_matiere: matiere.nom_matiere, moyenne });
+        moyennes_par_matiere.push({ id_Etudiant: etudiant.id, nom_Etudiant: etudiant.nom, prenom_Etudiant: etudiant.prenom, nom_matiere: matiere.nom_matiere, moyenne });
+        
+
+       
+        // Calculer la moyenne générale pour chaque étudiant
+        if (!moyenneGenerale[etudiant.id]) {
+          moyenneGenerale[etudiant.id] = { total: 0, count: 0 };
+        }
+
+        moyenneGenerale[etudiant.id].total += moyenne;
+        moyenneGenerale[etudiant.id].count += 1;
       }
     });
 
-    res.json({ moyennes });
+    // Calculer la moyenne générale finale
+    const moyenneGeneraleFinale = [];
+    for (const [id, data] of Object.entries(moyenneGenerale)) {
+      const moyenne = data.total / data.count;
+      moyenneGeneraleFinale.push({ id_Etudiant: parseInt(id), moyenne });
+    }
+
+    const moyenneGeneraleTrie = moyenneGeneraleFinale.sort((a, b) => b.moyenne - a.moyenne);
+
+    res.json({ moyennes_par_matiere, moyenneGeneraleTrie });
   } catch (error) {
     console.error('Erreur lors du calcul des moyennes :', error);
     res.status(500).json({ message: 'Erreur serveur lors du calcul des moyennes.' });
