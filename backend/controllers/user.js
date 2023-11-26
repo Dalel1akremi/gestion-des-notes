@@ -261,7 +261,7 @@ export const SubjectsGrades = async (req, res) => {
     });
 
     const formattedData = studentData.Notes.map(note => ({
-      subject: note.Module.nom_matiere,
+      subject: note.Matiere.nom_matiere,
       grades: {
         note_ds1: note.note_ds1,
         note_examen: note.note_examen,
@@ -293,23 +293,46 @@ export const ajoutMatiere = async (req, res) => {
     return res.status(500).json({ msg: "Error" });
   }
 };
-export const editMatiere = async (req, res) => {
-  const { nom, newNom } = req.body;
+export const ajoutNote = async (req, res) => {
+  const { id_matiere, id_ens,id,note_ds1,note_examen,note_tp } = req.body;
 
   try {
-    const mat = await Matiere.findOne({ where: { nom_matiere: nom } });
+    await Note.create({
+      id_matiere: id_matiere,
+      id_ens:id_ens,
+      id: id,
+      note_ds1:note_ds1,
+      note_examen:note_examen,
+      note_tp:note_tp
+    });
+    res.json({ msg: "note ajoutee avec succees" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ msg: "Erreur d'ajout note" });
+  }
+};
+export const editMatiere = async (req, res) => {
+  try {
+    const matiereId = req.params.id;
+    const updatedFields = req.body; 
+    if (updatedFields.password) {
+      // Générer un sel pour le hachage
+      const salt = await bcrypt.genSalt(10);
+      // Hacher le mot de passe avec le sel
+      updatedFields.password = await bcrypt.hash(updatedFields.password, salt);
+    }
+    const Mat = await Enseignant.findByPk(matiereId);
 
-    if (!mat) {
-      return res.status(404).json({ msg: "Matiere n'existe pas " });
+    if (!Mat) {
+      return res.status(404).json({ msg: "Teacher Not Found" });
     }
 
-    mat.nom_matiere = newNom; // Update the property of the category instance
-    await mat.save();
+    await Mat.update(updatedFields);
 
-    res.json({ msg: "Matiere modifiée avec succes", Matiere: mat });
+    res.json({ msg: "matiere modifiée avec succees." });
   } catch (error) {
-    console.error("Error in editMatiere:", error);
-    return res.status(500).json({ msg: "Erreur", error: error.message });
+    console.error(error);
+    res.status(500).json({ msg: "erreur lors de la modification" });
   }
 };
 
@@ -335,3 +358,49 @@ export const moyenne = async (req, res) => {
     res.status(500).json({ message: 'Erreur serveur lors du calcul des moyennes.' });
   }
 };
+
+export const StudentsGrades = async (req, res) => {
+  try {
+    const enseignantId = req.params.id_ens;
+
+    const studentData = await Etudiant.findByPk(enseignantId, {
+      include: [
+        {
+          model: Note,
+          attributes: ['id_note', 'id_matiere', 'id_ens', 'id', 'note_ds1', 'note_examen', 'note_tp'],
+          include: [
+            {
+              model: Etudiant,
+              attributes: ['id', 'nom', 'prenom'],
+            },
+            {
+              model: Matiere,
+              attributes: ['id_matiere', 'nom_matiere'],
+            },
+          ],
+        },
+      ],
+    });
+    
+    const formattedData = studentData.Notes.map(note => ({
+      etudiant: {
+        id: note.Etudiant.id,
+        nom: note.Etudiant.nom,
+        prenom:note.Etudiant.prenom, // Use 'nom' instead of 'id' for the student's name
+      },
+     matiere:note.Matiere.nom_matiere,
+      grades: {
+        note_ds1: note.note_ds1,
+        note_examen: note.note_examen,
+        note_tp: note.note_tp,
+      },
+    }));
+
+    res.json(formattedData);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+};
+
+
