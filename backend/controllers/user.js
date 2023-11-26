@@ -314,7 +314,7 @@ export const ajoutNote = async (req, res) => {
 };
 export const editMatiere = async (req, res) => {
   try {
-    const matiereId = req.params.id;
+    const matiereId = req.params.id_matiere;
     const updatedFields = req.body; 
     if (updatedFields.password) {
       // Générer un sel pour le hachage
