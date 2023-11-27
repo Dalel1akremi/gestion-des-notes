@@ -391,27 +391,25 @@ export const ajoutNote = async (req, res) => {
 export const editMatiere = async (req, res) => {
   try {
     const matiereId = req.params.id_matiere;
-    const updatedFields = req.body; 
-    if (updatedFields.password) {
-      // Générer un sel pour le hachage
-      const salt = await bcrypt.genSalt(10);
-      // Hacher le mot de passe avec le sel
-      updatedFields.password = await bcrypt.hash(updatedFields.password, salt);
-    }
-    const Mat = await Matiere.findByPk(matiereId);
+    let updatedFields = req.body;
 
-    if (!Mat) {
-      return res.status(404).json({ msg: "subject Not Found" });
+    const matiere = await Matiere.findByPk(matiereId);
+
+    if (!matiere) {
+      return res.status(404).json({ msg: "Subject Not Found" });
     }
 
-    await Mat.update(updatedFields);
+    await matiere.update(updatedFields);
 
-    res.json({ msg: "matiere modifiée avec succees." });
+    res.json({ msg: "Subject's information has been updated." });
+
   } catch (error) {
     console.error(error);
-    res.status(500).json({ msg: "erreur lors de la modification" });
+    res.status(500).json({ msg: "An error occurred while updating the subject's information" });
   }
 };
+
+
 export const moyenne = async (req, res) => {
   try {
     // Récupérer toutes les notes avec les détails de la matière associée
@@ -526,14 +524,49 @@ export const StudentsGrades = async (req, res) => {
     }));
 
     res.json(formattedData);
-    const recipients = [email]; // Assuming sending notification to the registered teacher
-    const subject = 'Updating Notification';
-    const message = `Hello ${prenom} ${nom}, your information has been updated succefully.`;
-
-    await sendNotifications(req, res, { recipients, subject, message });
+    
   
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
+  }
+};
+export const sendEmailNotification = async (recipient, subject, message) => {
+  try {
+    await transporter.sendMail({
+      from: 'abirghrissi83@gmail.com',
+      to: recipient,
+      subject: subject,
+      text: message
+    });
+    console.log('Notification email sent successfully.');
+    return true;
+  } catch (error) {
+    console.error('Error sending notification email:', error);
+    return false;
+  }
+};
+
+export const sendNotifications = async (req, res) => {
+  try {
+    const { recipients, subject, message } = req.body;
+
+    if (!recipients || !subject || !message) {
+      return res.status(400).json({ msg: 'Please provide recipients, subject, and message.' });
+    }
+
+    // Send notifications to recipients sequentially
+    for (const recipient of recipients) {
+      const emailSent = await sendEmailNotification(recipient, subject, message);
+      if (!emailSent) {
+        // Handle the case where an email fails to send to a recipient
+        console.error(`Failed to send notification to ${recipient}`);
+      }
+    }
+
+    res.json({ msg: 'Notifications sent successfully.' });
+  } catch (error) {
+    console.error('Error sending notifications:', error);
+    res.status(500).json({ msg: 'Error sending notifications.' });
   }
 };
