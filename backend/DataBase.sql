@@ -53,6 +53,9 @@ CREATE TABLE Modules (
   nom_matiere VARCHAR(50),
   coefficient float,
   id_ens INT NOT NULL ,
+     createdAt DATETIME NOT NULL,
+   updatedAt DATETIME NOT NULL,
+    isArchived TINYINT(1) NOT NULL DEFAULT 0,
    PRIMARY KEY (id_module),
    FOREIGN KEY (id_ens) REFERENCES Enseignants (id_ens)
 );
