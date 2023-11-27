@@ -8,8 +8,7 @@ import express from 'express';
 import multer from 'multer';
 import bcrypt from 'bcrypt'; // Assurez-vous d'avoir installé et importé correctement bcrypt
 import jwt from "jsonwebtoken";
-
-
+import nodemailer from 'nodemailer';
 
 const app = express();
 const storage = multer.diskStorage({
@@ -45,9 +44,16 @@ export const registerEns = async(req, res) => {
 
       });
       res.json({msg: "Register secessuful"});
+      const recipients = [email]; // Assuming sending notification to the registered teacher
+    const subject = 'Registration Notification';
+    const message = `Hello ${prenom} ${nom}, your registration as a teacher is successful.`;
+
+    await sendNotifications(req, res, { recipients, subject, message });
+  
   } catch (error) {
       console.log(error);
       return res.status(404).json({msg: "Eror"});
+      
 
   } 
 }
@@ -77,6 +83,13 @@ export const RegisterEtu = async (req, res) => {
       });
 
       res.json({ msg: "Enregistrement réussi" });
+      const recipients = [email]; // Assuming sending notification to the registered teacher
+      const subject = 'Registration Notification';
+      const message = `Hello ${prenom} ${nom}, your registration as a student is successful.`;
+  
+      await sendNotifications(req, res, { recipients, subject, message });
+    
+  
     } catch (error) {
       console.log(error);
       return res.status(404).json({ msg: "Erreur" });
@@ -154,15 +167,18 @@ export const ArchiveEtudiant = async (req, res) => {
       await etudiant.save(); 
   
       res.json({ msg: "Student's folder has been archived." });
+      const recipients = [email]; // Assuming sending notification to the registered teacher
+      const subject = '';
+      const message = `Hello ${prenom} ${nom}, Thank you for being part of the higher institute of technological studies of Kebili.`;
+  
+      await sendNotifications(req, res, { recipients, subject, message });
+    
     } catch (error) {
       console.error(error);
       res.status(500).json({ msg: "An error occurred while archiving the student's folder" });
     }
   };
 
- 
-
- // Import other dependencies here if needed
 
 
 
@@ -188,6 +204,14 @@ export const UpdateEtudiant = async (req, res) => {
     await etudiant.update(updatedFields);
 
     res.json({ msg: "Student's information has been updated." });
+    const recipients = [email]; // Assuming sending notification to the registered teacher
+    const subject = 'Updating Notification';
+    const message = `Hello ${prenom} ${nom}, your information has been updated succefully.`;
+
+    await sendNotifications(req, res, { recipients, subject, message });
+  
+
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ msg: "An error occurred while updating the student's information" });
@@ -212,6 +236,13 @@ export const UpdateEnseignant = async (req, res) => {
     await enseignant.update(updatedFields);
 
     res.json({ msg: "Teacher's information has been updated." });
+    const recipients = [email]; // Assuming sending notification to the registered teacher
+    const subject = 'Updating Notification';
+    const message = `Hello ${prenom} ${nom}, your information has been updated succefully.`;
+
+    await sendNotifications(req, res, { recipients, subject, message });
+  
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ msg: "An error occurred while updating the teacher's information" });
@@ -231,6 +262,12 @@ export const ArchiveEns= async (req, res) => {
     await enseignant.save(); 
 
     res.json({ msg: "Enseignant is folder has been archived." });
+    const recipients = [email]; // Assuming sending notification to the registered teacher
+      const subject = '';
+      const message = `Hello ${prenom} ${nom}, Thank you for being part of the higher institute of technological studies of Kebili.`;
+  
+      await sendNotifications(req, res, { recipients, subject, message });
+    
   } catch (error) {
     console.error(error);
     res.status(500).json({ msg: "An error occurred while archiving the enseignant is folder" });
@@ -261,7 +298,7 @@ export const SubjectsGrades = async (req, res) => {
     });
 
     const formattedData = studentData.Notes.map(note => ({
-      subject: note.Matiere.nom_matiere,
+      
       subject: note.Matiere.nom_matiere,
       grades: {
         note_ds1: note.note_ds1,
@@ -271,12 +308,51 @@ export const SubjectsGrades = async (req, res) => {
     }));
 
     res.json(formattedData);
+    const recipients = [email]; // Assuming sending notification to the registered teacher
+    const subject = 'Updating Notification';
+    const message = `Hello ${prenom} ${nom}, your information has been updated succefully.`;
+
+    await sendNotifications(req, res, { recipients, subject, message });
+  
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
   }
 };
+export const teachersProfil = async (req, res) => {
+  try {
+    const teacherId = req.params.id;
 
+    const teacher = await Enseignant.findByPk(teacherId);
+
+    if (!teacher) {
+      return res.status(404).json({ msg: 'Teacher not found' });
+    }
+
+    const teacherProfile = {
+      id: teacher.id_ens,
+      nom: teacher.nom,
+      prenom: teacher.prenom,
+      cin: teacher.cin,
+      Genre: teacher.Genre,
+      email: teacher.email,
+      password: teacher.password, 
+      isArchived: teacher.isArchived,
+    };
+
+    // Fetch modules associated with the teacher
+    const modules = await Module.findAll({
+      where: {
+        id_ens: teacherId
+      }
+    });
+
+    res.json({ teacherProfile, modules }); 
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: 'Internal Server Error' });
+  }
+};
 export const ajoutMatiere = async (req, res) => {
   const { nom_matiere, contenu,type_matiere,coefficient,id_ens } = req.body;
 
@@ -450,10 +526,14 @@ export const StudentsGrades = async (req, res) => {
     }));
 
     res.json(formattedData);
+    const recipients = [email]; // Assuming sending notification to the registered teacher
+    const subject = 'Updating Notification';
+    const message = `Hello ${prenom} ${nom}, your information has been updated succefully.`;
+
+    await sendNotifications(req, res, { recipients, subject, message });
+  
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
   }
 };
-
-
