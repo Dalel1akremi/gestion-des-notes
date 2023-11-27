@@ -594,23 +594,23 @@ export const ProfilEtud =async (req, res) => {
 
 
 
-export const ArchiveModule = async (req, res) => {
+export const ArchiveMatiere = async (req, res) => {
   try {
-    const moduleId = req.params.id_module; 
-    const module = await Module.findByPk(moduleId);
+    const matiereId = req.params.id_matiere; 
+    const matier = await Matiere.findByPk(matiereId);
 
-    if (!module) {
-      return res.status(404).json({ msg: "Module Not Found" });
+    if (!matier) {
+      return res.status(404).json({ msg: "Matiere Not Found" });
     }
 
-    module.isArchived = true; 
+    matier.isArchived = true; 
 
-    await module.save();
+    await matier.save();
 
-    res.json({ msg: "Module has been archived." });
+    res.json({ msg: "Matiere has been archived." });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ msg: "An error occurred while archiving the module" });
+    res.status(500).json({ msg: "An error occurred while archiving the matiere" });
   }
 };
 
