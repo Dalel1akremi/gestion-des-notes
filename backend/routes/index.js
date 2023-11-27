@@ -1,6 +1,6 @@
 import express from "express";
 
-import {RegisterEtu,registerEns,login ,StudentsGrades,ajoutNote ,registerAdm,ArchiveEtudiant,UpdateEtudiant,UpdateEnseignant,ArchiveEns,SubjectsGrades,ajoutMatiere,editMatiere,moyenne,teachersProfil,sendEmailNotification,sendNotifications} from "../controllers/user.js";
+import {RegisterEtu,registerEns,login ,StudentsGrades,ajoutNote ,registerAdm,ArchiveEtudiant,UpdateEtudiant,UpdateEnseignant,ArchiveEns,SubjectsGrades,ajoutMatiere,editMatiere,moyenne,teachersProfil,sendEmailNotification,sendNotifications, ProfilEtud,ArchiveModule} from "../controllers/user.js";
 import { verifyToken } from "../middelware/VerifyToken.js";
 const router = express.Router();
 router.post('/login', login);
@@ -20,4 +20,6 @@ router.get('/AffichageEnseignant/:id_ens',StudentsGrades);
 router.get('/teachersProfil/:id', teachersProfil);
 router.post('/sendEmailNotification', sendEmailNotification);
 router.post('/sendNotifications', sendNotifications);
+router.get('/students/:id',ProfilEtud);
+router.post('/ArchiveModule/:id_module', ArchiveModule);
 export default router;
