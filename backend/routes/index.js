@@ -1,6 +1,6 @@
 import express from "express";
 
-import {RegisterEtu,registerEns,login  ,registerAdm,ArchiveEtudiant,UpdateEtudiant,UpdateEnseignant,ArchiveEns,SubjectsGrades} from "../controllers/user.js";
+import {RegisterEtu,registerEns,login  ,registerAdm,ArchiveEtudiant,UpdateEtudiant,UpdateEnseignant,ArchiveEns,SubjectsGrades, ProfilEtud,ArchiveModule} from "../controllers/user.js";
 import { verifyToken } from "../middelware/VerifyToken.js";
 const router = express.Router();
 router.post('/login', login);
@@ -12,4 +12,6 @@ router.post('/registerEns', registerEns);
 router.post('/UpdateEtudiant/:id', UpdateEtudiant);
 router.post('/UpdateEnseignant/:id', UpdateEnseignant);
 router.get('/students/:id/subjects-and-grades',SubjectsGrades);
+router.get('/students/:id',ProfilEtud);
+router.post('/ArchiveModule/:id_module', ArchiveModule);
 export default router;

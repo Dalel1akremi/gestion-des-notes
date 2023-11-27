@@ -23,9 +23,24 @@ const Module = db.define('Modules',{
             key:'id_ens'
         }
     },
+    createdAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+      },
+      updatedAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+      },
+    isArchived: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false 
+    },
    
 }, {
-    freezeTableName: true
+    freezeTableName: true,
+    timestamps: false 
 });
 
 export default Module;

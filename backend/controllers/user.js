@@ -29,7 +29,7 @@ const db = new Sequelize('affichage', 'root', '', {
 });
 
 export const registerEns = async(req, res) => {
-  const {  nom,prenom,DateNaissance,Genre,cin,email,password } = req.body;
+  const {  nom,prenom,DateNaissance,Genre,cin,email,password,isArchived } = req.body;
   const salt = await bcrypt.genSalt();
   const hashPassword = await bcrypt.hash(password, salt);
   try {
@@ -276,3 +276,50 @@ export const SubjectsGrades = async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 };
+
+
+
+
+export const ProfilEtud =async (req, res) => {
+  try {
+    const studentId = req.params.id;
+    const student = await Etudiant.findByPk(studentId, {
+      attributes: { exclude: ['password'] }, 
+    });
+
+    if (!student) {
+      return res.status(404).json({ message: 'Student not found' });
+    }
+
+    res.json(student);
+  } catch (error) {
+    console.error('Error fetching student profile:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+
+
+export const ArchiveModule = async (req, res) => {
+  try {
+    const moduleId = req.params.id_module; 
+    const module = await Module.findByPk(moduleId);
+
+    if (!module) {
+      return res.status(404).json({ msg: "Module Not Found" });
+    }
+
+    module.isArchived = true; 
+
+    await module.save();
+
+    res.json({ msg: "Module has been archived." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: "An error occurred while archiving the module" });
+  }
+};
+
+
+
+
