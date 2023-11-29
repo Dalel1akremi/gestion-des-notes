@@ -342,13 +342,13 @@ export const teachersProfil = async (req, res) => {
     };
 
     // Fetch modules associated with the teacher
-    const modules = await Module.findAll({
+    const matieres = await Matiere.findAll({
       where: {
         id_ens: teacherId
       }
     });
 
-    res.json({ teacherProfile, modules }); 
+    res.json({ teacherProfile, matieres }); 
   } catch (error) {
     console.error(error);
     res.status(500).json({ msg: 'Internal Server Error' });

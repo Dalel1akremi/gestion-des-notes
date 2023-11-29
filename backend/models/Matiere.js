@@ -26,7 +26,11 @@ type:DataTypes.STRING
   },
   coefficient:{
     type:DataTypes.INTEGER
-      }
+      },
+      isArchived: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false 
+    },
 }, {
   freezeTableName: true
 });
