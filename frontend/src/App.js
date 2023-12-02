@@ -5,7 +5,7 @@ import Register from "./components/Register";
 import Home from "./components/Home";
 import Login from "./components/login";
 import Ajout from "./components/AjoutMatiere";
-import EditSubjectForm from "./components/ModifierMatiere";
+
 import StudentGradesTable from "./components/StudentGradesTable";
 
 import './App.css';
@@ -21,7 +21,6 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/Ajout" element={<Ajout />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/ModifierMatiere" element={<EditSubjectForm />} />
           <Route path="/grades" element={<StudentGradesTable />} />
           {/* Add more routes as needed */}
         </Routes>
