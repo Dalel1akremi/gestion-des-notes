@@ -1,5 +1,5 @@
 import React from "react";
-import SignupAdmn from "./components/SignupAdmn";
+import AjoutMatiere from "./components/ajoutMatiere";
 
 import './App.css';
 
@@ -7,7 +7,7 @@ function App() {
   return (
   
       <div>
-        <SignupAdmn />
+        <AjoutMatiere />
       </div>
  
   

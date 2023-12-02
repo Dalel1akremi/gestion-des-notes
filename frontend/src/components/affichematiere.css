@@ -1,0 +1,101 @@
+
+
+
+  h2{
+   
+    text-align: center;
+    font-weight: bold;
+  }
+
+.section-container {
+  margin-top: 10%;
+  border: 1px solid #ccc;
+  background-color: rgba(255, 255, 255, 0.9);
+padding: 2%;
+width: 60%;
+
+}
+
+
+
+
+.category-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 15px;
+}
+
+.category-list button {
+  margin-left: 10px;
+  background-color: #ff6b6b;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+.category-list button:hover {
+  background-color: #ff4848;
+}
+
+.input-field {
+  width: 100%;
+  padding: 5px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.add-button {
+  background-color: #5bc0de;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.add-button:hover {
+  background-color: #31b0d5;
+}
+
+.budget-section {
+  margin-top: 40px;
+}
+
+.budget-label {
+  font-size: 30px;
+}
+
+.budget-input {
+  width: 100%;
+  padding: 5px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.save-budget-button {
+  background-color: #5bc0de;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.save-budget-button:hover {
+  background-color: #31b0d5;
+}
+.success-message {
+  position: absolute;
+  bottom: -190px; /* Adjust the distance from the bottom as needed */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: green; /* Change to your desired background color */
+  color: white; /* Change to your desired text color */
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-weight: bold;
+}
