@@ -1,0 +1,95 @@
+.login_container {
+	width: 100%;
+	min-height: 100vh;
+	
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-attachment: fixed;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+}
+
+.input {
+	background-color: #edf5f3;
+	
+}
+.login {
+	
+	background-color: white;
+	width: 30%;
+	height: 50%;
+	padding-top: 2%;
+	padding-bottom: 10%;
+	padding-left: 2%;
+	padding-right: 2%;
+}
+h1{
+	color: red;
+	text-align: center;
+	font-weight: bold;
+}
+#
+
+ul {
+	margin: 0;
+	padding: 0;
+  }
+  li {font-family: 'Dancing Script', cursive;
+	font-weight:bold;
+   
+	font-size:10Px;;
+	list-style-type: none;
+  }
+ 
+  a {
+	text-decoration: none;
+	color: black;
+  }
+  /* ******************* NAVBAR ******************* */
+  nav {
+	overflow: hidden;
+	background-color:white;
+	position: fixed;
+	width: 100%;
+	opacity: 0.9;
+  }
+  header li {
+	float: right;
+	font-size: 1.2em;
+  }
+  header li a {
+	text-decoration: none;
+	text-align: center;
+	padding: 18px 16px;
+  }
+  #logo {
+	
+	font-weight:bold;
+	float: left;
+	font-size:1.7em;
+  }
+  #result {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 20px; }
+
+	.centerr {
+		margin: 0;
+		position: absolute;
+		top: 70%;
+		left: 50%;
+		-ms-transform: translate(-50%, -50%);
+		transform: translate(-50%, -50%);
+	  }
+	  button {
+		color: white;
+		padding: 10px;
+		font-size: 23px;
+		background: rgb(0, 85, 255);
+		border-color:  rgb(0, 85, 255);
+        border-radius: 10px;
+        
+	  }
