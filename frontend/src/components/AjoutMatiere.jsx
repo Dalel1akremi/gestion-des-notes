@@ -11,7 +11,7 @@ const AjoutMatiere = () => {
     const [loading, setLoading] = useState('');
     const [msg, setMsg] = useState(null);
   
-    const ajout =async (e) => {
+    const Ajout =async (e) => {
       e.preventDefault();
       try {
           const response = await axios.post('http://localhost:5000/ajoutMatiere', {
@@ -26,7 +26,7 @@ const AjoutMatiere = () => {
           setSuccessMessage(response.data.message);
           window.location = "/Affichematiere";
 
-              window.location = "/Affichematiere";
+            
             } catch (error) {
                 if (error.response) {
                     setMsg(error.response.data.msg);
@@ -39,7 +39,7 @@ const AjoutMatiere = () => {
           <div className="middle-section">
             
               <h2>Ajout Matiere</h2>
-              <form  className="ajout" onSubmit={ajout}  >
+              <form  className="ajout" onSubmit={Ajout}  >
               <input
                 type="text"
                 placeholder="Nom_matiere"
@@ -85,9 +85,9 @@ const AjoutMatiere = () => {
                 required
                 className="input"
               />
-              <a href ="/Affichematiere"><button type="submit" className="btn btn-secondary">
+              <button type="submit" className="btn btn-secondary">
                 Ajouter
-              </button></a>
+              </button>
             </form>
           </div>
         </div>

@@ -4,8 +4,9 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Register from "./components/Register";
 import Home from "./components/Home";
 import Login from "./components/login";
-import Ajout from "./components/AjoutMatiere";
-
+import AjoutMatiere from "./components/AjoutMatiere";
+import Affichematiere from "./components/Affichematiere";
+import EditMatiere from "./components/ModifMatiere";
 import StudentGradesTable from "./components/StudentGradesTable";
 
 import './App.css';
@@ -19,7 +20,9 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/Ajout" element={<Ajout />} />
+          <Route path="/AjoutMatiere" element={<AjoutMatiere />} />
+          <Route path="/EditMatiere" element={<EditMatiere />} />
+          <Route path="/Affichematiere" element={<Affichematiere />} />
           <Route path="/register" element={<Register />} />
           <Route path="/grades" element={<StudentGradesTable />} />
           {/* Add more routes as needed */}
