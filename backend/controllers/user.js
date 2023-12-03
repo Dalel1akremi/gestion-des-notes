@@ -616,4 +616,15 @@ export const ArchiveMatiere = async (req, res) => {
 
 
 
+export const getMatiere = async (req, res) => {
+  try {
+    const Matieres = await Matiere.findAll({
+      attributes: ['id_matiere','nom_matiere','contenu','type_matiere','coefficient','id_ens']
+    });
 
+    res.json(Matieres);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ msg: 'Error while fetching matiere names' });
+  }
+};
