@@ -16,7 +16,7 @@ const Login = () => {
 
       if (token) {
         localStorage.setItem("token", token);
-        window.location = "/acceuil";
+        window.location = "/Affichematiere";
       } else {
         setMsg("User Not Found");
       }
@@ -49,7 +49,7 @@ placeholder="Mot de passe" type='password'/>
   <a href="/Reintialisation"  className="text-primary">Mot de passe oubliee?</a>
 </div>
 {msg && <div className="error_msg">{msg}</div>}
-<a href="/acceuil" ><button className="centerr">Se connecter</button></a>
+<a href="/Affichematiere" ><button className="centerr">Se connecter</button></a>
 </form>
 </div>
   );

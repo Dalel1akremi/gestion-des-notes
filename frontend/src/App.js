@@ -18,7 +18,7 @@ function App() {
     <Fragment>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Login />} />
           <Route path="/login" element={<Login />} />
           <Route path="/AjoutMatiere" element={<AjoutMatiere />} />
           <Route path="/EditMatiere" element={<EditMatiere />} />
