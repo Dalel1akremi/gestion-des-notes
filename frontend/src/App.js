@@ -6,7 +6,7 @@ import Home from "./components/Home";
 import Login from "./components/login";
 import AjoutMatiere from "./components/AjoutMatiere";
 import Affichematiere from "./components/Affichematiere";
-import EditMatiere from "./components/ModifMatiere";
+import ModifMatiere from "./components/ModifMatiere";
 import StudentGradesTable from "./components/StudentGradesTable";
 
 import './App.css';
@@ -21,7 +21,7 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/login" element={<Login />} />
           <Route path="/AjoutMatiere" element={<AjoutMatiere />} />
-          <Route path="/EditMatiere" element={<EditMatiere />} />
+          <Route path="/ModifMatiere/:id_matiere" element={<ModifMatiere />} />
           <Route path="/Affichematiere" element={<Affichematiere />} />
           <Route path="/register" element={<Register />} />
           <Route path="/grades" element={<StudentGradesTable />} />
