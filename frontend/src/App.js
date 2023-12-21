@@ -2,6 +2,7 @@ import React from "react";
 import { Fragment } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Register from "./components/Register";
+import RegisterEns from "./components/RegistreEns";
 import Home from "./components/Home";
 import Login from "./components/login";
 import AjoutMatiere from "./components/AjoutMatiere";
@@ -23,7 +24,8 @@ function App() {
           <Route path="/AjoutMatiere" element={<AjoutMatiere />} />
           <Route path="/ModifMatiere/:id_matiere" element={<ModifMatiere />} />
           <Route path="/Affichematiere" element={<Affichematiere />} />
-          <Route path="/register" element={<Register />} />
+          <Route path="/RegisterEtud" element={<Register />} />
+          <Route path="/RegisterEns" element={<RegisterEns />} />
           <Route path="/grades" element={<StudentGradesTable />} />
           {/* Add more routes as needed */}
         </Routes>
