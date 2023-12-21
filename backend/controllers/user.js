@@ -9,11 +9,12 @@ import multer from 'multer';
 import bcrypt from 'bcrypt'; // Assurez-vous d'avoir installé et importé correctement bcrypt
 import jwt from "jsonwebtoken";
 import nodemailer from 'nodemailer';
-
 const app = express();
+
+// Multer storage configuration
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, '../photo'); // Spécifiez le chemin où vous souhaitez enregistrer les images
+    cb(null, '../photo'); // Specify the path where you want to save the images
   },
   filename: function (req, file, cb) {
     cb(null, file.originalname);
@@ -22,52 +23,59 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+// Sequelize database configuration
 const db = new Sequelize('affichage', 'root', '', {
-  host: "localhost",
-  dialect: "mysql"
+  host: 'localhost',
+  dialect: 'mysql'
 });
 
-export const registerEns = async(req, res) => {
+// Registration function for Enseignant
+export const registerEns = async (req, res) => {
+  const { nom, prenom, DateNaissance, Genre, cin, email, password, isArchived } = req.body;
 
-  const {  nom,prenom,DateNaissance,Genre,cin,email,password,isArchived } = req.body;
+  // Check if email already exists in any table
+  const emailExists = await checkEmailExists(email);
+  if (emailExists) {
+    return res.status(400).json({ msg: 'Email already exists' });
+  }
+
   const salt = await bcrypt.genSalt();
   const hashPassword = await bcrypt.hash(password, salt);
+
   try {
-      await Enseignant.create({   
-        nom: nom,
-        prenom:prenom,    
-        DateNaissance:DateNaissance,
-        Genre:Genre,
-        cin:cin,
-          email: email,
-          password: hashPassword,
-          isArchived:isArchived
+    await Enseignant.create({
+      nom: nom,
+      prenom: prenom,
+      DateNaissance: DateNaissance,
+      Genre: Genre,
+      cin: cin,
+      email: email,
+      password: hashPassword,
+      isArchived: isArchived
+    });
 
-      });
-      res.json({msg: "Register secessuful"});
-      const recipients = [email]; // Assuming sending notification to the registered teacher
-    const subject = 'Registration Notification';
-    const message = `Hello ${prenom} ${nom}, your registration as a teacher is successful.`;
+    res.json({ msg: 'Registration successful' });
 
-    await sendNotifications(req, res, { recipients, subject, message });
-  
+   
   } catch (error) {
-      console.log(error);
-      return res.status(404).json({msg: "Eror"});
-      
+    console.log(error);
+    return res.status(404).json({ msg: 'Error' });
+  }
+};
 
-  } 
-}
-
+// Registration function for Etudiant
 export const RegisterEtu = async (req, res) => {
   upload.single('photo')(req, res, async (err) => {
-    if (err instanceof multer.MulterError) {
-      return res.status(400).json({ msg: "Erreur lors du téléchargement de la photo" });
-    } else if (err) {
-      return res.status(500).json({ msg: "Une erreur est survenue" });
+    // Handling file upload errors
+
+    const { nom, prenom, date_naiss, cin, photo_identite, email, password, isArchived } = req.body;
+
+    // Check if email already exists in any table
+    const emailExists = await checkEmailExists(email);
+    if (emailExists) {
+      return res.status(400).json({ msg: 'Email already exists' });
     }
 
-    const { nom, prenom, date_naiss, cin, photo_identite,email, password ,isArchived} = req.body;
     const salt = await bcrypt.genSalt();
     const hashPassword = await bcrypt.hash(password, salt);
 
@@ -79,44 +87,54 @@ export const RegisterEtu = async (req, res) => {
         cin: cin,
         email: email,
         password: hashPassword,
-        photo_identite: photo_identite, // Enregistrez le chemin de l'image dans la base de données
-        isArchived:isArchived
+        photo_identite: photo_identite,
+        isArchived: isArchived
       });
 
-      res.json({ msg: "Enregistrement réussi" });
-      const recipients = [email]; // Assuming sending notification to the registered teacher
-      const subject = 'Registration Notification';
-      const message = `Hello ${prenom} ${nom}, your registration as a student is successful.`;
-  
-      await sendNotifications(req, res, { recipients, subject, message });
-    
-  
+      res.json({ msg: 'Registration successful' });
     } catch (error) {
       console.log(error);
-      return res.status(404).json({ msg: "Erreur" });
+      return res.status(404).json({ msg: 'Error' });
     }
   });
 };
 
-export const registerAdm = async(req, res) => {
-  const { nom,prenom,email,password} = req.body;
+// Registration function for Administrateur
+export const registerAdm = async (req, res) => {
+  const { nom, prenom, email, password } = req.body;
+
+  // Check if email already exists in any table
+  const emailExists = await checkEmailExists(email);
+  if (emailExists) {
+    return res.status(400).json({ msg: 'Email already exists' });
+  }
+
   const salt = await bcrypt.genSalt();
   const hashPassword = await bcrypt.hash(password, salt);
-  try {
-      await Administrateur.create({   
-        prenom:prenom,    
-        nom: nom,
-          email: email,
-          password: hashPassword
-       
-      });
-      res.json({msg: "Register secessuful"});
-  } catch (error) {
-      console.log(error);
-      return res.status(404).json({msg: "Eror"});
 
-  } 
-}
+  try {
+    await Administrateur.create({
+      prenom: prenom,
+      nom: nom,
+      email: email,
+      password: hashPassword
+    });
+
+    res.json({ msg: 'Registration successful' });
+  } catch (error) {
+    console.log(error);
+    return res.status(404).json({ msg: 'Error' });
+  }
+};
+
+// Function to check if the email already exists in any of the tables
+const checkEmailExists = async (email) => {
+  const enseignantExists = await Enseignant.findOne({ where: { email: email } });
+  const etudiantExists = await Etudiant.findOne({ where: { email: email } });
+  const administrateurExists = await Administrateur.findOne({ where: { email: email } });
+
+  return enseignantExists || etudiantExists || administrateurExists;
+};
 
 export const login = async (req, res) => {
     try {
