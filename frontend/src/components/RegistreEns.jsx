@@ -29,7 +29,7 @@ const RegisterEns = () => {
                 setInscriptionValide(false);
               }, 7000);
             
-            window.location = "/login";
+            window.location = "/AfficheEns";
         } catch (error) {
             if (error.response) {
                 setMsg(error.response.data.msg);
