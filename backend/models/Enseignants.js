@@ -24,6 +24,10 @@ const Enseignant = db.define('Enseignants',{
    DateNaissance:{
     type:DataTypes.DATE
 } ,
+type: {
+    type: DataTypes.STRING, // Adjust the data type and length if needed
+    defaultValue: 'enseignant',
+  },
     email:{
         type: DataTypes.VARCHAR?
         primaryKey: true,

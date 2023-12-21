@@ -24,7 +24,10 @@ const Etudiant = db.define('Etudiants',{
     photo_identite :{
         type: DataTypes.STRING
     },
-    
+    type: {
+        type: DataTypes.STRING, // Adjust the data type and length if needed
+        defaultValue: 'etudiant',
+      },
     email:{
         type: DataTypes.STRING,
         primaryKey: true,

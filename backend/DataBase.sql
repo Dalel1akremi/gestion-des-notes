@@ -105,11 +105,12 @@ ADD COLUMN type VARCHAR(20) NOT NULL DEFAULT 'administrateur';
 
 CREATE TABLE Matieres (
   id_matiere INT ,
+  id_ens INT(11),
   nom_matiere VARCHAR(100) NOT NULL,
+  type_matiere VARCHAR(10) CHECK (type_matiere IN ('TP', 'cours')),
   contenu TEXT,
   coefficient INT,
-  id_ens INT(11),
-  type_matiere VARCHAR(10) CHECK (type_matiere IN ('TP', 'cours')),
+  isArchived TINYINT(1) NOT NULL DEFAULT 0,
    createdAt DATETIME NOT NULL,
    updatedAt DATETIME NOT NULL,
   PRIMARY KEY (id_matiere,nom_matiere),
