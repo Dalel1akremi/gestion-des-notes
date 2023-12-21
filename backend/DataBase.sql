@@ -22,7 +22,8 @@ CREATE TABLE Etudiants (
 ALTER TABLE Etudiants
   MODIFY id INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 COMMIT;
-
+ALTER TABLE Etudiants
+ADD COLUMN type VARCHAR(20) NOT NULL DEFAULT 'etudiant';
    
   
 CREATE TABLE Enseignants (
@@ -32,6 +33,7 @@ CREATE TABLE Enseignants (
     DateNaissance DATE,
    Genre VARCHAR(10),
    cin int(8),
+   
    email VARCHAR(50) UNIQUE,
    password VARCHAR(255),
    createdAt DATETIME NOT NULL,
@@ -47,7 +49,8 @@ COMMIT;
 ALTER TABLE Enseignants
 MODIFY COLUMN Genre VARCHAR(10) CHECK (Genre IN ('homme', 'femme'));
 COMMIT;
-
+ALTER TABLE Enseignants
+ADD COLUMN type VARCHAR(20) NOT NULL DEFAULT 'enseignant';
 CREATE TABLE Modules (
   id_module INT NOT NULL,
   nom_matiere VARCHAR(50),
@@ -97,7 +100,8 @@ CREATE TABLE Administrateurs (
 ALTER TABLE Administrateurs
   MODIFY id_adm INT(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 COMMIT;
-
+ALTER TABLE Administrateurs
+ADD COLUMN type VARCHAR(20) NOT NULL DEFAULT 'administrateur';
 
 CREATE TABLE Matieres (
   id_matiere INT ,
