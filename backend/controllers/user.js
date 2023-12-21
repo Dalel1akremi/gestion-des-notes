@@ -593,21 +593,21 @@ export const ProfilEtud =async (req, res) => {
 };
 
 
-
 export const ArchiveMatiere = async (req, res) => {
   try {
-    const matiereId = req.params.id_matiere; 
-    const matier = await Matiere.findByPk(matiereId);
+    const matiereId = req.params.id_matiere;
+    const matiere = await Matiere.findByPk(matiereId);
 
-    if (!matier) {
+    if (!matiere) {
       return res.status(404).json({ msg: "Matiere Not Found" });
     }
 
-    matier.isArchived = true; 
+    matiere.isArchived = true;
 
-    await matier.save();
+    await matiere.save();
 
-    res.json({ msg: "Matiere has been archived." });
+    // Renvoyer la matière archivée
+    res.json({ msg: "Matiere has been archived.", archivedMatiere: matiere });
   } catch (error) {
     console.error(error);
     res.status(500).json({ msg: "An error occurred while archiving the matiere" });
@@ -616,15 +616,41 @@ export const ArchiveMatiere = async (req, res) => {
 
 
 
+
 export const getMatiere = async (req, res) => {
   try {
     const Matieres = await Matiere.findAll({
-      attributes: ['id_matiere','nom_matiere','contenu','type_matiere','coefficient','id_ens']
+      attributes: ['id_matiere','nom_matiere','contenu','type_matiere','coefficient','id_ens'],
+      where: {
+        isarchived: 0,
+      },
     });
 
     res.json(Matieres);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ msg: 'Error while fetching matiere names' });
+  }
+};
+export const getMatiereById = async (req, res) => {
+  try {
+    const matiereId = req.params.id; // Assuming the ID is passed as a route parameter
+
+    const matiere = await Matiere.findOne({
+      attributes: ['id_matiere', 'nom_matiere', 'contenu', 'type_matiere', 'coefficient', 'id_ens'],
+      where: {
+        id_matiere: matiereId,
+        isarchived: 0, 
+      },
+    });
+
+    if (!matiere) {
+      return res.status(404).json({ msg: 'Matiere Not Found' });
+    }
+
+    res.json(matiere);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ msg: 'Error while fetching matiere by ID' });
   }
 };
