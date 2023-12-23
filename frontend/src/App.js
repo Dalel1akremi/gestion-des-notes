@@ -10,6 +10,7 @@ import Affichematiere from "./components/Affichematiere";
 import ModifMatiere from "./components/ModifMatiere";
 import StudentGradesTable from "./components/StudentGradesTable";
 import AfficheEns from"./components/AfficheEns";
+import DashbordStudent from "./components/DashbordStudent";
 import './App.css';
 import ModifEns from "./components/ModifEns";
 import AfficheEtu from "./components/AfficheEtu";
@@ -34,9 +35,9 @@ function App() {
           <Route path="/RegisterEtud" element={<Register />} />
           <Route path="/RegisterEns" element={<RegisterEns />} />
           <Route path="/grades" element={<StudentGradesTable />} />
+          <Route path="/DashbordStudent" element={<DashbordStudent />} />
           <Route path="/DashbordAdmin" element={<DashbordAdmin />} />
           <Route path="/Home" element={< Home/>} />
-         
           {/* Add more routes as needed */}
         </Routes>
       </BrowserRouter>
