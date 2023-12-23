@@ -49,6 +49,7 @@ const AjoutMatiere = () => {
                 required
                 className="input"
               />
+              <div>
               <input
                 type="text"
                 placeholder="Contenu"
@@ -57,7 +58,8 @@ const AjoutMatiere = () => {
                 onChange={(e) => setContenu(e.target.value)}
                 required
                 className="input"
-              />
+              /></div>
+              <div>
               <input
                 type="text"
                 placeholder="Coefficient"
@@ -66,7 +68,7 @@ const AjoutMatiere = () => {
                 onChange={(e) => setCoefficient(e.target.value)}
                 required
                 className="input"
-              />
+              /></div>
               <input
                 type="text"
                 placeholder="Id_ens"
@@ -76,6 +78,7 @@ const AjoutMatiere = () => {
                 required
                 className="input"
               />
+              <div>
               <input
                 type="text"
                 placeholder="Type_matiere"
@@ -84,7 +87,7 @@ const AjoutMatiere = () => {
                 onChange={(e) => setType_matiere(e.target.value)}
                 required
                 className="input"
-              />
+              /></div>
               <button type="submit" className="btn btn-secondary">
                 Ajouter
               </button>

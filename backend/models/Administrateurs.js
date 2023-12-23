@@ -15,7 +15,10 @@ const Administrateur = db.define('Administrateurs', {
     },
     prenom: {
         type: DataTypes.STRING
-    },
+    }, type: {
+        type: DataTypes.STRING, // Adjust the data type and length if needed
+        defaultValue: 'administrateur',
+      },
     email: {
         type: DataTypes.STRING,
         primaryKey: true

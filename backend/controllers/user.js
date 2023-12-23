@@ -9,11 +9,12 @@ import multer from 'multer';
 import bcrypt from 'bcrypt'; // Assurez-vous d'avoir installé et importé correctement bcrypt
 import jwt from "jsonwebtoken";
 import nodemailer from 'nodemailer';
-
 const app = express();
+
+// Multer storage configuration
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, '../photo'); // Spécifiez le chemin où vous souhaitez enregistrer les images
+    cb(null, '../photo'); // Specify the path where you want to save the images
   },
   filename: function (req, file, cb) {
     cb(null, file.originalname);
@@ -22,16 +23,25 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+// Sequelize database configuration
 const db = new Sequelize('affichage', 'root', '', {
-  host: "localhost",
-  dialect: "mysql"
+  host: 'localhost',
+  dialect: 'mysql'
 });
 
-export const registerEns = async(req, res) => {
+// Registration function for Enseignant
+export const registerEns = async (req, res) => {
+  const { nom, prenom, DateNaissance, Genre, cin, email, password, isArchived } = req.body;
 
-  const {  nom,prenom,DateNaissance,Genre,cin,email,password,isArchived } = req.body;
+  // Check if email already exists in any table
+  const emailExists = await checkEmailExists(email);
+  if (emailExists) {
+    return res.status(400).json({ msg: 'Email already exists' });
+  }
+
   const salt = await bcrypt.genSalt();
   const hashPassword = await bcrypt.hash(password, salt);
+
   try {
       await Enseignant.create({   
         nom: nom,
@@ -52,22 +62,24 @@ export const registerEns = async(req, res) => {
     await sendNotifications(req, res, { recipients, subject, message });
   
   } catch (error) {
-      console.log(error);
-      return res.status(404).json({msg: "Eror"});
-      
+    console.log(error);
+    return res.status(404).json({ msg: 'Error' });
+  }
+};
 
-  } 
-}
-
+// Registration function for Etudiant
 export const RegisterEtu = async (req, res) => {
   upload.single('photo')(req, res, async (err) => {
-    if (err instanceof multer.MulterError) {
-      return res.status(400).json({ msg: "Erreur lors du téléchargement de la photo" });
-    } else if (err) {
-      return res.status(500).json({ msg: "Une erreur est survenue" });
+    // Handling file upload errors
+
+    const { nom, prenom, date_naiss, cin, photo_identite, email, password, isArchived } = req.body;
+
+    // Check if email already exists in any table
+    const emailExists = await checkEmailExists(email);
+    if (emailExists) {
+      return res.status(400).json({ msg: 'Email already exists' });
     }
 
-    const { nom, prenom, date_naiss, cin, photo_identite,email, password ,isArchived} = req.body;
     const salt = await bcrypt.genSalt();
     const hashPassword = await bcrypt.hash(password, salt);
 
@@ -79,44 +91,54 @@ export const RegisterEtu = async (req, res) => {
         cin: cin,
         email: email,
         password: hashPassword,
-        photo_identite: photo_identite, // Enregistrez le chemin de l'image dans la base de données
-        isArchived:isArchived
+        photo_identite: photo_identite,
+        isArchived: isArchived
       });
 
-      res.json({ msg: "Enregistrement réussi" });
-      const recipients = [email]; // Assuming sending notification to the registered teacher
-      const subject = 'Registration Notification';
-      const message = `Hello ${prenom} ${nom}, your registration as a student is successful.`;
-  
-      await sendNotifications(req, res, { recipients, subject, message });
-    
-  
+      res.json({ msg: 'Registration successful' });
     } catch (error) {
       console.log(error);
-      return res.status(404).json({ msg: "Erreur" });
+      return res.status(404).json({ msg: 'Error' });
     }
   });
 };
 
-export const registerAdm = async(req, res) => {
-  const { nom,prenom,email,password} = req.body;
+// Registration function for Administrateur
+export const registerAdm = async (req, res) => {
+  const { nom, prenom, email, password } = req.body;
+
+  // Check if email already exists in any table
+  const emailExists = await checkEmailExists(email);
+  if (emailExists) {
+    return res.status(400).json({ msg: 'Email already exists' });
+  }
+
   const salt = await bcrypt.genSalt();
   const hashPassword = await bcrypt.hash(password, salt);
-  try {
-      await Administrateur.create({   
-        prenom:prenom,    
-        nom: nom,
-          email: email,
-          password: hashPassword
-       
-      });
-      res.json({msg: "Register secessuful"});
-  } catch (error) {
-      console.log(error);
-      return res.status(404).json({msg: "Eror"});
 
-  } 
-}
+  try {
+    await Administrateur.create({
+      prenom: prenom,
+      nom: nom,
+      email: email,
+      password: hashPassword
+    });
+
+    res.json({ msg: 'Registration successful' });
+  } catch (error) {
+    console.log(error);
+    return res.status(404).json({ msg: 'Error' });
+  }
+};
+
+// Function to check if the email already exists in any of the tables
+const checkEmailExists = async (email) => {
+  const enseignantExists = await Enseignant.findOne({ where: { email: email } });
+  const etudiantExists = await Etudiant.findOne({ where: { email: email } });
+  const administrateurExists = await Administrateur.findOne({ where: { email: email } });
+
+  return enseignantExists || etudiantExists || administrateurExists;
+};
 
 export const login = async (req, res) => {
     try {
@@ -167,12 +189,7 @@ export const ArchiveEtudiant = async (req, res) => {
   
       await etudiant.save(); 
   
-      res.json({ msg: "Student's folder has been archived." });
-      const recipients = [email]; // Assuming sending notification to the registered teacher
-      const subject = '';
-      const message = `Hello ${prenom} ${nom}, Thank you for being part of the higher institute of technological studies of Kebili.`;
-  
-      await sendNotifications(req, res, { recipients, subject, message });
+      
     
     } catch (error) {
       console.error(error);
@@ -205,12 +222,7 @@ export const UpdateEtudiant = async (req, res) => {
     await etudiant.update(updatedFields);
 
     res.json({ msg: "Student's information has been updated." });
-    const recipients = [email]; // Assuming sending notification to the registered teacher
-    const subject = 'Updating Notification';
-    const message = `Hello ${prenom} ${nom}, your information has been updated succefully.`;
-
-    await sendNotifications(req, res, { recipients, subject, message });
-  
+    
 
 
   } catch (error) {
@@ -219,34 +231,34 @@ export const UpdateEtudiant = async (req, res) => {
   }
 };
 export const UpdateEnseignant = async (req, res) => {
+ 
   try {
-    const enseignantId = req.params.id;
-    const updatedFields = req.body; 
+    const enseignantId = req.params.id_ens;
+    let updatedFields = req.body; 
+
     if (updatedFields.password) {
-      // Générer un sel pour le hachage
-      const salt = await bcrypt.genSalt(10);
-      // Hacher le mot de passe avec le sel
-      updatedFields.password = await bcrypt.hash(updatedFields.password, salt);
+    
+      const saltRounds = 10;
+      const hashedPassword = await bcrypt.hash(updatedFields.password, saltRounds);
+      updatedFields.password = hashedPassword;
     }
+
     const enseignant = await Enseignant.findByPk(enseignantId);
 
     if (!enseignant) {
-      return res.status(404).json({ msg: "Teacher Not Found" });
+      return res.status(404).json({ msg: "Enseignant Not Found" });
     }
 
     await enseignant.update(updatedFields);
 
-    res.json({ msg: "Teacher's information has been updated." });
-    const recipients = [email]; // Assuming sending notification to the registered teacher
-    const subject = 'Updating Notification';
-    const message = `Hello ${prenom} ${nom}, your information has been updated succefully.`;
-
-    await sendNotifications(req, res, { recipients, subject, message });
+    res.json({ msg: "Enseigant's information has been updated." });
   
+  
+
 
   } catch (error) {
     console.error(error);
-    res.status(500).json({ msg: "An error occurred while updating the teacher's information" });
+    res.status(500).json({ msg: "An error occurred while updating the student's information" });
   }
 };
 export const ArchiveEns= async (req, res) => {
@@ -262,18 +274,36 @@ export const ArchiveEns= async (req, res) => {
 
     await enseignant.save(); 
 
-    res.json({ msg: "Enseignant is folder has been archived." });
-    const recipients = [email]; // Assuming sending notification to the registered teacher
-      const subject = '';
-      const message = `Hello ${prenom} ${nom}, Thank you for being part of the higher institute of technological studies of Kebili.`;
-  
-      await sendNotifications(req, res, { recipients, subject, message });
+    res.json({ msg: "Enseignant is folder has been archived.",ens:enseignant});
     
   } catch (error) {
     console.error(error);
     res.status(500).json({ msg: "An error occurred while archiving the enseignant is folder" });
   }
 };
+
+export const ArchiveMatiere = async (req, res) => {
+  try {
+    const matiereId = req.params.id_matiere;
+    const matiere = await Matiere.findByPk(matiereId);
+
+    if (!matiere) {
+      return res.status(404).json({ msg: "Matiere Not Found" });
+    }
+
+    matiere.isArchived = true;
+
+    await matiere.save();
+
+    // Renvoyer la matière archivée
+    res.json({ msg: "Matiere has been archived.", archivedMatiere: matiere });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: "An error occurred while archiving the matiere" });
+  }
+};
+
+
 
 
 
@@ -531,46 +561,46 @@ export const StudentsGrades = async (req, res) => {
     console.error(error);
     res.status(500).send('Internal Server Error');
   }
-};
-export const sendEmailNotification = async (recipient, subject, message) => {
-  try {
-    await transporter.sendMail({
-      from: 'abirghrissi83@gmail.com',
-      to: recipient,
-      subject: subject,
-      text: message
-    });
-    console.log('Notification email sent successfully.');
-    return true;
-  } catch (error) {
-    console.error('Error sending notification email:', error);
-    return false;
-  }
-};
+ };
+// export const sendEmailNotification = async (recipient, subject, message) => {
+//   try {
+//     await transporter.sendMail({
+//       from: 'abirghrissi83@gmail.com',
+//       to: recipient,
+//       subject: subject,
+//       text: message
+//     });
+//     console.log('Notification email sent successfully.');
+//     return true;
+//   } catch (error) {
+//     console.error('Error sending notification email:', error);
+//     return false;
+//   }
+// };
 
-export const sendNotifications = async (req, res) => {
-  try {
-    const { recipients, subject, message } = req.body;
+// export const sendNotifications = async (req, res) => {
+//   try {
+//     const { recipients, subject, message } = req.body;
 
-    if (!recipients || !subject || !message) {
-      return res.status(400).json({ msg: 'Please provide recipients, subject, and message.' });
-    }
+//     if (!recipients || !subject || !message) {
+//       return res.status(400).json({ msg: 'Please provide recipients, subject, and message.' });
+//     }
 
-    // Send notifications to recipients sequentially
-    for (const recipient of recipients) {
-      const emailSent = await sendEmailNotification(recipient, subject, message);
-      if (!emailSent) {
-        // Handle the case where an email fails to send to a recipient
-        console.error(`Failed to send notification to ${recipient}`);
-      }
-    }
+//     // Send notifications to recipients sequentially
+//     for (const recipient of recipients) {
+//       const emailSent = await sendEmailNotification(recipient, subject, message);
+//       if (!emailSent) {
+//         // Handle the case where an email fails to send to a recipient
+//         console.error(`Failed to send notification to ${recipient}`);
+//       }
+//     }
 
-    res.json({ msg: 'Notifications sent successfully.' });
-  } catch (error) {
-    console.error('Error sending notifications:', error);
-    res.status(500).json({ msg: 'Error sending notifications.' });
-  }
-};
+//     res.json({ msg: 'Notifications sent successfully.' });
+//   } catch (error) {
+//     console.error('Error sending notifications:', error);
+//     res.status(500).json({ msg: 'Error sending notifications.' });
+//   }
+// };
 
 
 
@@ -594,37 +624,114 @@ export const ProfilEtud =async (req, res) => {
 
 
 
-export const ArchiveMatiere = async (req, res) => {
-  try {
-    const matiereId = req.params.id_matiere; 
-    const matier = await Matiere.findByPk(matiereId);
-
-    if (!matier) {
-      return res.status(404).json({ msg: "Matiere Not Found" });
-    }
-
-    matier.isArchived = true; 
-
-    await matier.save();
-
-    res.json({ msg: "Matiere has been archived." });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ msg: "An error occurred while archiving the matiere" });
-  }
-};
-
-
-
 export const getMatiere = async (req, res) => {
   try {
     const Matieres = await Matiere.findAll({
-      attributes: ['id_matiere','nom_matiere','contenu','type_matiere','coefficient','id_ens']
+      attributes: ['id_matiere','nom_matiere','contenu','type_matiere','coefficient','id_ens'],
+      where: {
+        isarchived: 0,
+      },
     });
 
     res.json(Matieres);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ msg: 'Error while fetching matiere names' });
+  }
+};
+export const getMatiereById = async (req, res) => {
+  try {
+    const matiereId = req.params.id; // Assuming the ID is passed as a route parameter
+
+    const matiere = await Matiere.findOne({
+      attributes: ['id_matiere', 'nom_matiere', 'contenu', 'type_matiere', 'coefficient', 'id_ens'],
+      where: {
+        id_matiere: matiereId,
+        isarchived: 0, 
+      },
+    });
+
+    if (!matiere) {
+      return res.status(404).json({ msg: 'Matiere Not Found' });
+    }
+
+    res.json(matiere);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ msg: 'Error while fetching matiere by ID' });
+  }
+};
+export const getEns = async (req, res) => {
+  try {
+    const enseignant = await Enseignant.findAll({
+      attributes: ['id_ens','nom','prenom','Genre','cin','DateNaissance','email'],
+      where: {
+        isarchived: 0,
+      },
+    });
+
+    res.json(enseignant);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ msg: 'Error while fetching Enseignant' });
+  }
+};
+export const getEnsById = async (req, res) => {
+  try {
+    const EnsId = req.params.id_ens; // Assuming the ID is passed as a route parameter
+
+    const Ens = await Enseignant.findOne({
+      attributes: ['id_ens','nom','prenom','cin','DateNaissance','email'],
+      where: {
+        id_ens: EnsId,
+        isarchived: 0, 
+      },
+    });
+
+    if (!Ens) {
+      return res.status(404).json({ msg: 'Ens Not Found' });
+    }
+
+    res.json(Ens);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ msg: 'Error while fetching Ens by ID' });
+  }
+};
+export const getEtu = async (req, res) => {
+  try {
+    const etudiant = await Etudiant.findAll({
+      attributes: ['id','nom','prenom','cin','date_naiss','email'],
+      where: {
+        isarchived: 0,
+      },
+    });
+
+    res.json(etudiant);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ msg: 'Error while fetching etudiant' });
+  }
+};
+export const getEtuById = async (req, res) => {
+  try {
+    const EtuId = req.params.id; // Assuming the ID is passed as a route parameter
+
+    const Etu = await Etudiant.findOne({
+      attributes: ['id','nom','prenom','cin','date_naiss','email'],
+      where: {
+        id: EtuId,
+        isarchived: 0, 
+      },
+    });
+
+    if (!Etu) {
+      return res.status(404).json({ msg: 'Ens Not Found' });
+    }
+
+    res.json(Etu);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ msg: 'Error while fetching Ens by ID' });
   }
 };

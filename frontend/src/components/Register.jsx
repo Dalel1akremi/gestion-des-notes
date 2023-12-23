@@ -29,7 +29,7 @@ const Register = () => {
                 setInscriptionValide(false);
               }, 7000);
             
-            window.location = "/login";
+            window.location = "/AfficheEtu";
         } catch (error) {
             if (error.response) {
                 setMsg(error.response.data.msg);

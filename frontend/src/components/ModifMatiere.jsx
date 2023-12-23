@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 
-const EditMatiere = () => {
+
+const ModifMatiere = () => {
   const { id_matiere } = useParams(); // Use useParams to get parameters from the URL
 
   const [nom_matiere, setNom_Matiere] = useState('');
@@ -16,7 +17,7 @@ const EditMatiere = () => {
   useEffect(() => {
     const fetchMatiereDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/getMatiere`);
+        const response = await axios.get(`http://localhost:5000/getMatiereById/${id_matiere}`);
         const matiereDetails = response.data;
 
         setNom_Matiere(matiereDetails.nom_matiere);
@@ -44,6 +45,7 @@ const EditMatiere = () => {
         id_ens,
       });
       setMsg(response.data.msg);
+      window.location = "/Affichematiere";
     } catch (error) {
       console.error('Error updating matiere details:', error);
     }
@@ -57,25 +59,21 @@ const EditMatiere = () => {
       ) : (
         <form onSubmit={handleEdit}>
           <label>
-            Nom Matiere:
-            <input type="text" value={nom_matiere} onChange={(e) => setNom_Matiere(e.target.value)} />
+            <input type="text" value={nom_matiere} onChange={(e) => setNom_Matiere(e.target.value)} className='input'placeholder='Nom Matiere'/>
           </label>
-          <label>
-            Coefficient:
-            <input type="text" value={coefficient} onChange={(e) => setCoefficient(e.target.value)} />
-          </label>
-          <label>
-            Contenu:
-            <input type="text" value={contenu} onChange={(e) => setContenu(e.target.value)} />
-          </label>
-          <label>
-            Type Matiere:
-            <input type="text" value={type_matiere} onChange={(e) => setType_matiere(e.target.value)} />
-          </label>
-          <label>
-            Id Ens:
-            <input type="text" value={id_ens} onChange={(e) => setId_ens(e.target.value)} />
-          </label>
+          <div>
+  
+            <input type="text" value={coefficient} onChange={(e) => setCoefficient(e.target.value)} className='input' placeholder='Coefficient'/>
+          </div>
+          <div>
+            <input type="text" value={contenu} onChange={(e) => setContenu(e.target.value)} className='input'placeholder='Contenu'/>
+          </div>
+          <div> 
+            <input type="text" value={type_matiere} onChange={(e) => setType_matiere(e.target.value)} className='input'placeholder='Type'/>
+          </div>
+          <div>
+            <input type="text" value={id_ens} onChange={(e) => setId_ens(e.target.value)}className='input'placeholder='Id Ens' />
+          </div>
           <button type="submit">Save Changes</button>
           {msg && <p>{msg}</p>}
         </form>
@@ -84,4 +82,4 @@ const EditMatiere = () => {
   );
 };
 
-export default EditMatiere;
+export default ModifMatiere;
