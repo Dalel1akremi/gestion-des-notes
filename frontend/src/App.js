@@ -14,6 +14,8 @@ import './App.css';
 import ModifEns from "./components/ModifEns";
 import AfficheEtu from "./components/AfficheEtu";
 import ModifEtu from "./components/ModifEtu";
+import DashbordAdmin from "./components/DashbordAdmin";
+
 function App() {
   const user = localStorage.getItem("token");
 
@@ -33,6 +35,9 @@ function App() {
           <Route path="/RegisterEtud" element={<Register />} />
           <Route path="/RegisterEns" element={<RegisterEns />} />
           <Route path="/grades" element={<StudentGradesTable />} />
+          <Route path="/DashbordAdmin" element={<DashbordAdmin />} />
+          <Route path="/Home" element={< Home/>} />
+         
           {/* Add more routes as needed */}
         </Routes>
       </BrowserRouter>
