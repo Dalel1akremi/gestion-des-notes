@@ -1,94 +1,180 @@
-.login_container {
-	width: 100%;
-	min-height: 100vh;
-	
-	background-repeat: no-repeat;
-	background-size: cover;
-	background-attachment: fixed;
+@import url('https://rsms.me/inter/inter-ui.css');
 
-	display: flex;
-	align-items: center;
-	justify-content: center;
-
+::selection {
+  background: #2D2F36;
+}
+::-webkit-selection {
+  background: #2D2F36;
+}
+::-moz-selection {
+  background: #2D2F36;
 }
 
-.input {
-	background-color: #edf5f3;
-	
+body {
+  background: white;
+  font-family: 'Inter UI', sans-serif;
+  margin: 0;
+  padding: 20px;
 }
+
+.page {
+  background: #e2e2e5;
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - 40px);
+  position: absolute;
+  place-content: center;
+  width: calc(100% - 40px);
+}
+@media (max-width: 767px) {
+  .page {
+    height: auto;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+  }
+}
+
+.container {
+  display: flex;
+  height: 320px;
+  margin: 0 auto;
+  justify-content: center;
+  
+}
+@media (max-width: 767px) {
+  .container {
+    flex-direction: column;
+    height: 630px;
+    width: 320px;
+  }
+}
+
+.left {
+  background: white;
+  height: calc(100% - 40px);
+  top: 20px;
+  position: relative;
+  width: 50%;
+  max-width: 35%; 
+}
+@media (max-width: 767px) {
+  .left {
+    height: 100%;
+    left: 20px;
+    width: calc(100% - 40px);
+    max-height: 270px;
+  }
+}
+
 .login {
-	
-	background-color: white;
-	width: 30%;
-	height: 50%;
-	padding-top: 2%;
-	padding-bottom: 10%;
-	padding-left: 2%;
-	padding-right: 2%;
-}
-h1{
-	color: red;
-	text-align: center;
-	font-weight: bold;
+  font-size: 50px;
+  font-weight: 900;
+  margin: 50px 40px 40px;
 }
 
-ul {
-	margin: 0;
-	padding: 0;
-  }
-  li {font-family: 'Dancing Script', cursive;
-	font-weight:bold;
-   
-	font-size:10Px;;
-	list-style-type: none;
-  }
- 
-  a {
-	text-decoration: none;
-	color: black;
-  }
-  /* ******************* NAVBAR ******************* */
-  nav {
-	overflow: hidden;
-	background-color:white;
-	position: fixed;
-	width: 100%;
-	opacity: 0.9;
-  }
-  header li {
-	float: right;
-	font-size: 1.2em;
-  }
-  header li a {
-	text-decoration: none;
-	text-align: center;
-	padding: 18px 16px;
-  }
-  #logo {
-	
-	font-weight:bold;
-	float: left;
-	font-size:1.7em;
-  }
-  #result {
-    font-size: 20px;
-    font-weight: bold;
-    margin-top: 20px; }
+.eula {
+  color: #999;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 40px;
+}
 
-	.centerr {
-		margin: 0;
-		position: absolute;
-		top: 70%;
-		left: 50%;
-		-ms-transform: translate(-50%, -50%);
-		transform: translate(-50%, -50%);
-	  }
-	  button {
-		color: white;
-		padding: 10px;
-		font-size: 23px;
-		background: rgb(0, 85, 255);
-		border-color:  rgb(0, 85, 255);
-        border-radius: 10px;
-        
-	  }
+.right {
+  background: #474A59;
+  box-shadow: 0px 0px 40px 16px rgba(0, 0, 0, 0.22);
+  color: #F1F1F2;
+  position: relative;
+  width: 50%;
+  max-width: 35%; 
+}
+@media (max-width: 767px) {
+  .right {
+    flex-shrink: 0;
+    height: 100%;
+    width: 100%;
+    max-height: 350px;
+  }
+}
+
+svg {
+  position: absolute;
+  width: 320px;
+}
+
+.form {
+  margin: 40px;
+  position: absolute;
+}
+
+
+label {
+  color: #c2c2c5;
+  display: block;
+  font-size: 14px;
+  height: 16px;
+  margin-top: 20px;
+  margin-bottom: 5px;
+}
+
+input {
+  background: transparent;
+  border: 0;
+  color: #f2f2f2;
+  font-size: 20px;
+  height: 30px;
+  line-height: 30px;
+  outline: none !important;
+  width: 100%;
+}
+input::-moz-focus-inner {
+  border: 0;
+}
+
+#submit {
+  color: #707075;
+  margin-top: 40px;
+  transition: color 300ms;
+}
+#submit:focus {
+  color: #f2f2f2;
+}
+#submit:active {
+  color: #d0d0d2;
+}
+
+path {
+  fill: none;
+  stroke: url(#linearGradient);
+  stroke-width: 4;
+  stroke-dasharray: 240 1386;
+  transition: stroke-dashoffset 0.7s ease-out;
+}
+#email:focus + svg path {
+  stroke-dashoffset: 0;
+}
+#password:focus + svg path {
+  stroke-dashoffset: -336;
+}
+#submit:focus + svg path {
+  stroke-dashoffset: -730;
+}
+
+input[type="email"],
+input[type="password"],
+input[type="submit"] {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 8px;
+  
+}
+input[type="submit"] {
+  border: none;
+  background-color: #474A59;
+  color: #F1F1F2;
+  cursor: pointer;
+}
+.error-message {
+  color: red;
+  font-size: 14px;
+  margin-top: 5px;
+}
