@@ -141,40 +141,47 @@ const checkEmailExists = async (email) => {
 };
 
 export const login = async (req, res) => {
-    try {
-        const { email, password } = req.body;
+  try {
+    const { email, password } = req.body;
+    let user;
+    let userType;
 
-        // Check if the user exists in the student table
-        let user = await Etudiant.findOne({ where: { email } });
-        let userType = 'student';
+    user = await Etudiant.findOne({ where: { email } });
+    userType = 'student';
 
-        if (!user) {
-            // If not found in students, check in teachers table
-            user = await Enseignant.findOne({ where: { email } });
-            userType = 'teacher';
-            if (!user) {
-                // If not found in teachers, check in administrators table
-                user = await Administrateur.findOne({ where: { email } });
-                userType = 'admin';
-            }
-        }
-
-        if (!user) {
-            return res.status(404).json({ msg: "User not found" });
-        }
-
-        const match = await bcrypt.compare(password, user.password);
-        if (!match) {
-            return res.status(401).json({ msg: "Invalid credentials" });
-        }
-
-        const token = jwt.sign({ userId: user.id, userType }, "YOUR_SECRET_KEY");
-        res.json({ token });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ msg: "Server Error" });
+    if (!user) {
+      user = await Enseignant.findOne({ where: { email } });
+      userType = 'teacher';
+      if (!user) {
+        user = await Administrateur.findOne({ where: { email } });
+        userType = 'admin';
+      }
     }
+
+    if (!user) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+
+    if (user.isArchived) {
+      // If user is archived, prevent login
+      return res.status(403).json({ msg: "User is archived." });
+    } else {
+      // If user is not archived, check password
+      const match = await bcrypt.compare(password, user.password);
+      if (!match) {
+        return res.status(401).json({ msg: "Invalid credentials" });
+      }
+
+      const token = jwt.sign({ userId: user.id, userType }, "YOUR_SECRET_KEY");
+      res.json({ token });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: "Server Error" });
+  }
 };
+
+
 
 export const ArchiveEtudiant = async (req, res) => {
     try {
