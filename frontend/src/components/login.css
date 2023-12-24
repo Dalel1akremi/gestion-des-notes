@@ -49,7 +49,7 @@ body {
   }
 }
 
-.left {
+.container .left {
   background: white;
   height: calc(100% - 40px);
   top: 20px;
@@ -58,7 +58,7 @@ body {
   max-width: 35%; 
 }
 @media (max-width: 767px) {
-  .left {
+  .container .leftT {
     height: 100%;
     left: 20px;
     width: calc(100% - 40px);
@@ -79,16 +79,16 @@ body {
   margin: 40px;
 }
 
-.right {
+.container .right {
   background: #474A59;
   box-shadow: 0px 0px 40px 16px rgba(0, 0, 0, 0.22);
   color: #F1F1F2;
   position: relative;
   width: 50%;
-  max-width: 35%; 
+  max-width: 25%; 
 }
 @media (max-width: 767px) {
-  .right {
+  .container .right {
     flex-shrink: 0;
     height: 100%;
     width: 100%;
@@ -107,7 +107,7 @@ svg {
 }
 
 
-label {
+.form label {
   color: #c2c2c5;
   display: block;
   font-size: 14px;
@@ -116,7 +116,7 @@ label {
   margin-bottom: 5px;
 }
 
-input {
+.form input {
   background: transparent;
   border: 0;
   color: #f2f2f2;
@@ -126,19 +126,19 @@ input {
   outline: none !important;
   width: 100%;
 }
-input::-moz-focus-inner {
+.form input::-moz-focus-inner {
   border: 0;
 }
 
-#submit {
+.form #submit {
   color: #707075;
-  margin-top: 40px;
+  margin-top: 30px;
   transition: color 300ms;
 }
-#submit:focus {
+.form #submit:focus {
   color: #f2f2f2;
 }
-#submit:active {
+.form #submit:active {
   color: #d0d0d2;
 }
 
@@ -149,25 +149,25 @@ path {
   stroke-dasharray: 240 1386;
   transition: stroke-dashoffset 0.7s ease-out;
 }
-#email:focus + svg path {
+.form #email:focus + svg path {
   stroke-dashoffset: 0;
 }
-#password:focus + svg path {
+.form #password:focus + svg path {
   stroke-dashoffset: -336;
 }
-#submit:focus + svg path {
+.form #submit:focus + svg path {
   stroke-dashoffset: -730;
 }
 
-input[type="email"],
-input[type="password"],
-input[type="submit"] {
+.form input[type="email"],
+.form input[type="password"],
+.form input[type="submit"] {
   border: 1px solid #ccc;
   border-radius: 4px;
   padding: 8px;
   
 }
-input[type="submit"] {
+.form input[type="submit"] {
   border: none;
   background-color: #474A59;
   color: #F1F1F2;
